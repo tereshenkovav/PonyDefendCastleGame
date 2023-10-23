@@ -1,0 +1,32 @@
+{
+   "ajcost":100,
+   "twilycost":400,
+   "raritycost":200,
+   "flattercost":250,
+   "pinkiecost":50,
+   "rainbowcost":350,
+
+   "twilywork":15,
+   "twilyattack":40,
+
+   "raritywork":20,
+   "rarityret":250,
+
+   "flatterwork":10,
+   "pinkiework":10,
+
+   "initmoney":100,
+   "initmonsters":100,
+   "castlehealth":300,
+   "ajhealth":100,
+   "ajspeed":40,
+   "ajattack":30,
+   "rdspeed":200,
+   "stoneattack":50,
+   "pinkiemulattack":1.5,
+
+   "monsterspawnmin":8,
+   "monsterspawnmax":12,
+
+   "moneyinc":10
+}
