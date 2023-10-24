@@ -14,6 +14,7 @@ var stone ;
 var sfail ;
 var swin ;
 var fire ;
+var strings ;
 
 var snd_laser ;
 var snd_galop ;
@@ -117,17 +118,13 @@ function getAttackMul() {
 	if (pinkietime>0) return balance.pinkiemulattack ; else return 1 ;
 }
 
-function formatMonsterInfo(mi) {
-	return mi.caption+".\nАтака: "+mi.attack+" в секунду.\n"+
-		   "Скорость: "+mi.speed+"\n"+
-		   "Прочность: "+mi.health ;
-}
-
 function isUnderFire() {
 	return castlehealth/balance.castlehealth<0.5 ;
 }
 
 function Init() {
+
+   strings = system.loadObject("strings.json") ;
 
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
@@ -341,11 +338,11 @@ function Render() {
 	if (gameover) {
 		if (iswin) {
 			swin.renderTo(400,300) ;
-			labgameover.setText("Победа!") ;			
+			labgameover.setText(strings.textwin) ;
 		}
 		else {
 			sfail.renderTo(400,300) ;		
-			labgameover.setText("Поражение!") ;					
+			labgameover.setText(strings.textfail) ;
 		}
 		labgameover.printTo(280,260) ;	
 	}
