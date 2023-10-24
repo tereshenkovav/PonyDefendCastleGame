@@ -26,5 +26,7 @@
   "about_title":"Pony-castle defense game",
   "about_version":"v1.0.0",
   "about_info":"  Castle Defense style game with MLP:FiM characters. Developed\nwith C++/QtScript/SFML. Author - Aleksandr V. Tereshenkov.\nHome pages: tav-developer.itch.io and github.com/tereshenkovav",
-  "about_credits":"Credits"
+  "about_credits":"Credits",
+  "help_title":"Game rules",
+  "help_text":"The task of the game - at each level, do not let the enemies destroy your\ncastle, summoning for gold and diamonds ponies that attack enemies\nor provide other support.\nThe gold increased automatically every second, diamonds increased\nfor destroying enemies and stored between levels.\nAlso for diamonds, you can order an increase in the level of each pony or\nadditional improvements for ponies between levels.\n\nCharacteristics of ponies:\n\nApplejack delays and attacks monsters with a melee attack.\nPinki Pie increases the value of all attacks during his summoning.\nRainbow Dash flies over the battlefield and drops stones that cause\nonce damage.\nFlattershy, at the time of his summoning, he forces all enemies\non the battlefield to retreat at a low speed.\nRariti increasing the gold reserve at the end of his call.\nTwilight Sparkle attacks the nearest monster with a laser."
 }

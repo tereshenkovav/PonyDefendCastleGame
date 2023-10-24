@@ -13,7 +13,6 @@ var castleico ;
 var stone ;
 var sfail ;
 var swin ;
-var help ;
 var fire ;
 
 var snd_laser ;
@@ -28,7 +27,6 @@ var labmoney ;
 var labmonsterleft ;
 var labcastle ;
 var labgameover ;
-var labinfo ;
 
 var linemonsterhealthgreen ;
 var linemonsterhealthred ;
@@ -131,8 +129,6 @@ function isUnderFire() {
 
 function Init() {
 
-   help = game.loadSprite('help.png') ;
-
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
    castle = game.loadSprite('castle.png') ;
@@ -226,8 +222,6 @@ function Init() {
    labcastle.setColor(0,255,0) ;
    labgameover = game.loadText("Arial.ttf","",48) ;
    labgameover.setColor(255,255,255) ;
-   labinfo = game.loadText("Arial.ttf","",16) ;
-   labinfo.setColor(255,255,255) ;
 
    textcost = game.loadText("Arial.ttf","",16) ;
    textcost.setColor(255,255,255) ;
@@ -263,31 +257,11 @@ function Init() {
 function Render() {
 	var mp = game.getMousePos() ;   
 	
-	var info = "" ;
-
    back.renderTo(0,182) ;
    coin.renderTo(380,30) ;
    monsterico.renderTo(480,30) ;
    castleico.renderTo(580,30) ;
-      
-   help.renderTo(700,30) ;
-   labinfo.setText("Справка") ;
-   labinfo.printTo(730,20) ;
-   
-   if ((help.isPointIn(mp.x,mp.y))||((730<mp.x)&&(mp.y<40)))
-	   info = "Задача игры - не дать врагам разрушить вашу крепость.\n"+
-			  "Используйте золото для призыва пони,\nкоторые атакуют врагов или дают бонусы.\n\n"+
-			  "Нажатие клавиш 1-6 призывает пони,\nесли золота достаточно.\n\n"+
-			  "Наведите курсор на монстров,\nчтобы узнать их характеристики,\n"+
-              "или на иконки сверху,\nчтобы узнать их назначение." ;			  
-   
-	if (coin.isPointIn(mp.x,mp.y)) 
-		info = "Запас золота, прибывает по 10 единиц в секунду" ;
-   if (monsterico.isPointIn(mp.x,mp.y)) 
-		info = "Общее количество оставшихся монстров" ;
-   if (castleico.isPointIn(mp.x,mp.y)) 
-		info = "Запас прочности крепости" ;
-   
+  
    butaj.renderTo(10,10) ;
    textcost.setText(balance.ajcost+"  Key:1") ;    textcost.printTo(64,15) ;
    butpinkie.renderTo(180,10) ;
@@ -302,26 +276,6 @@ function Render() {
    textcost.setText(balance.raritycost+"  Key:5") ; textcost.printTo(64,95) ;
    buttwily.renderTo(180,90) ;
    textcost.setText(balance.twilycost+"  Key:6") ; textcost.printTo(224,95) ;
-
-	if (butaj.isPointIn(mp.x,mp.y)) 
-		info = "Эпплджек, бежит слева направо,\nзадерживая и атакуя монстров ближней атакой.\nАтака "+
-	       balance.ajattack+" в секунду на ближайшего противника." ;
-    if (butpinkie.isPointIn(mp.x,mp.y)) 
-		info = "Пинки Пай, на время своего призыва увеличивает\nсилу атаки всех пони и камней на "+(balance.pinkiemulattack-1)*100+"%\n"+
-	       "Длительность призыва "+balance.pinkiework+" секунд." ;
-   if (butrainbow.isPointIn(mp.x,mp.y)) 
-		info = "Рейнбоу Дэш, пролетает над полем боя\nи сбрасывает камни.\n"+
-	       "Каждый камень наносит разовый урон "+balance.stoneattack+" единиц\nвсем врагам в точке падения." ;
-   if (butflatter.isPointIn(mp.x,mp.y)) 
-		info = "Флаттершай, на время своего призыва заставляет\nвсех врагов на поле боя отступать c небольшой скоростью.\n"+
-	       "Длительность призыва "+balance.flatterwork+" секунд." ;
-   if (butrarity.isPointIn(mp.x,mp.y)) 
-		info = "Рарити, по окончанию действия своего призыва\nпополняет золотой запас на "+balance.rarityret+" единиц.\n"+
-	    "Длительность призыва "+balance.raritywork+" секунд." ;
-    if (buttwily.isPointIn(mp.x,mp.y)) 
-		info = "Твайлайт Спаркл, атакует роголазером\nближайшего монстра.\nАтака "+
-	       balance.twilyattack+" в секунду на ближайшего противника.\n"+
-	      "Длительность призыва "+balance.twilywork+" секунд." ;
 	       
    if (twilytime>0) {	  
      if (getNearMonsterIdx()!=-1) 
@@ -345,7 +299,6 @@ function Render() {
 	for (var i=0; i<monsters.length; i++) {
 		var teksprite = monster[monsters[i].mtype] ;
      teksprite.renderTo(monsters[i].x,575) ;
-	 if (teksprite.isPointIn(mp.x,mp.y)) info = formatMonsterInfo(monstertypes[monsters[i].mtype]) ;
 	 var proc = monsters[i].health/monsters[i].maxhealth ;	 
 	 if (proc<0.33) drawInd(linemonsterhealthred,monsters[i].x,proc) ; else
 	 if (proc<0.66) drawInd(linemonsterhealthyellow,monsters[i].x,proc) ; else
@@ -381,11 +334,6 @@ function Render() {
      if (castlehealth/balance.castlehealth<0.66) labcastle.setColor(255,255,0) ; else
        labcastle.setColor(0,255,0) ; 
    labcastle.printTo(605,20) ;
-      
-   if ((info!="")&&(!gameover)) {
-     labinfo.setText(info) ;
-     labinfo.printTo(340,70) ;
-   }
    
     for (var i=0; i<stones.length; i++) 
      stone.renderTo(stones[i].x,stones[i].y) ;
