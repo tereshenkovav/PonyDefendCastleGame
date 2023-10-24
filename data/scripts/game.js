@@ -8,6 +8,7 @@ var aj ;
 var pinkie ;
 var rarity ;
 var coin ;
+var coin_ico ;
 var monsterico ;
 var castleico ;
 var stone ;
@@ -30,9 +31,6 @@ var labgameover ;
 var linemonsterhealthgreen ;
 var linemonsterhealthred ;
 var linemonsterhealthyellow ;
-
-var butaj ; var buttwily ; var butpinkie ;
-var butrainbow ; var butrarity ; var butflatter ;
 
 var textcost ;
 
@@ -58,6 +56,7 @@ var pinkietime ;
 var ajcalled ;
 var rdcalled ;
 var nextmonster ;
+var nextmoney ;
 
 var monsters = new Array() ;
 var gameover ;
@@ -72,12 +71,17 @@ var but_no ;
 var but_restart ;
 var but_continue ;
 var but_menu ;
+var circle ;
+var circle_gray ;
 
 var ispause ;
 
 $include<rects.inc>
+$include<funcs.inc>
 
 const STONE_COUNT = 5 ;
+
+var but_calls = new Array() ;
 
 function getRandomInt(min, max){
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -85,8 +89,7 @@ function getRandomInt(min, max){
 
 function createButton(filename) {
    var but = game.loadSprite(filename) ;
-   but.setHotSpot(0,0) ;
-   but.setScale(50) ;
+   but.setScale(60) ;   
    return but ;
 }
 
@@ -136,6 +139,8 @@ function Init() {
 
    strings = system.loadObject("strings.json") ;
 
+   balance = system.loadObject("scripts/balance.json") ;
+
    makeRects(rects_gameover) ;
 
    text_closeconfirm = game.loadText("arial.ttf",strings.textexitconfirm,22) ;
@@ -146,6 +151,9 @@ function Init() {
    but_continue = game.loadText("arial.ttf",strings.text_continue,22) ;
    but_menu = game.loadText("arial.ttf",strings.text_menu,22) ;
 
+   circle = game.loadSprite('circle.png') ;
+   circle_gray = game.loadSprite('circle_gray.png') ;
+
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
    castle = game.loadSprite('castle.png') ;
@@ -155,15 +163,32 @@ function Init() {
    fire.play() ;
 
    coin = game.loadSprite('coin.png') ;
+   coin_ico = game.loadSprite('coin.png') ;
+   coin_ico.setScale(50) ;
+
    monsterico = game.loadSprite('monster_ico.png') ;
    castleico = game.loadSprite('castle_ico.png') ;
-   
-   butaj = createButton('aj/0.gif') ;
-   buttwily = createButton('twily/0.gif') ;
-   butflatter = createButton('flatter/0.gif') ;
-   butrainbow = createButton('rainbow/0.gif') ;
-   butrarity = createButton('rarity/0.gif') ;
-   butpinkie = createButton('pinkie/0.gif') ;
+   but_calls.push({ but : createButton('icons/applejack_ico.png'),
+                    but_gray : createButton('icons/applejack_ico.png'), 
+                    cost : balance.ajcost }) ;
+   but_calls.push({ but : createButton('icons/pinki_ico.png'),
+                    but_gray : createButton('icons/pinki_ico.png'),
+                    cost : balance.pinkiecost }) ;
+   but_calls.push({ but : createButton('icons/rarity_ico.png'),
+                    but_gray : createButton('icons/rarity_ico.png'),
+                    cost : balance.raritycost }) ;
+   but_calls.push({ but : createButton('icons/flatter_ico.png'),
+                    but_gray : createButton('icons/flatter_ico.png'),
+                    cost : balance.flattercost }) ;
+   but_calls.push({ but : createButton('icons/rainbow_ico.png'),
+                    but_gray : createButton('icons/rainbow_ico.png'),
+                    cost : balance.rainbowcost }) ;
+   but_calls.push({ but : createButton('icons/twily_ico.png'),
+                    but_gray : createButton('icons/twily_ico.png'),
+                    cost : balance.twilycost }) ;
+
+   for (var i=0; i<but_calls.length; i++) 
+     but_calls[i].but_gray.convertPixels("funcGray") ;
 
    laser = game.createLine(255,0,255) ;
 
@@ -228,10 +253,13 @@ function Init() {
       
    labmoney = game.loadText("Arial.ttf","",20) ;
    labmoney.setColor(255,255,255) ;
+   labmoney.setAlignCenter() ;
    labmonsterleft = game.loadText("Arial.ttf","",20) ;
    labmonsterleft.setColor(255,255,255) ;
+   labmonsterleft.setAlignCenter() ;
    labcastle = game.loadText("Arial.ttf","",20) ;
    labcastle.setColor(0,255,0) ;
+   labcastle.setAlignCenter() ;
    labgameover = game.loadText("Arial.ttf","",22) ;
    labgameover.setColor(255,255,255) ;
    labgameover.setAlignCenter() ;
@@ -242,8 +270,6 @@ function Init() {
    game.setBackgroundColor(0,100,200) ;
      
    flatterpos=200 ;
-
-   balance = system.loadObject("scripts/balance.json") ;
 
    money=balance.initmoney ;
    monsterleft=balance.initmonsters ;
@@ -260,6 +286,7 @@ function Init() {
 	iswin=false ;
 
    setNextMonster() ;
+   nextmoney = 1.0 ;
    
    mindt=999 ;
    maxdt=0 ;
@@ -273,25 +300,31 @@ function Render() {
 	var mp = game.getMousePos() ;   
 	
    back.renderTo(0,182) ;
-   coin.renderTo(380,30) ;
-   monsterico.renderTo(480,30) ;
-   castleico.renderTo(580,30) ;
-  
-   butaj.renderTo(10,10) ;
-   textcost.setText(balance.ajcost+"  Key:1") ;    textcost.printTo(64,15) ;
-   butpinkie.renderTo(180,10) ;
-   textcost.setText(balance.pinkiecost+"  Key:2") ; textcost.printTo(224,15) ;
+   coin.renderTo(650,30) ;
+   monsterico.renderTo(700,30) ;
+   castleico.renderTo(750,30) ;
+      
+   for (var i=0; i<but_calls.length; i++) {
+     if (but_calls[i].cost<=money) {
+     circle.renderTo(40+i*60,40) ;
+     if (but_calls[i].but.isPointIn(mp.x,mp.y))
+       but_calls[i].but.setColor(255,255,255) ; 
+     else 
+       but_calls[i].but.setColor(200,200,200) ;
+     but_calls[i].but.renderTo(40+i*60,40) ;
+     }
+     else {
+     circle_gray.renderTo(40+i*60,40) ;
+     but_calls[i].but_gray.renderTo(40+i*60,40) ;
+     }
 
-   butrainbow.renderTo(10,50) ;
-   textcost.setText(balance.rainbowcost+"  Key:3") ; textcost.printTo(64,55) ;
-   butflatter.renderTo(180,50) ;
-   textcost.setText(balance.flattercost+"  Key:4") ; textcost.printTo(224,55) ;
-
-   butrarity.renderTo(10,90) ;
-   textcost.setText(balance.raritycost+"  Key:5") ; textcost.printTo(64,95) ;
-   buttwily.renderTo(180,90) ;
-   textcost.setText(balance.twilycost+"  Key:6") ; textcost.printTo(224,95) ;
-	       
+     if (but_calls[i].cost>0) {
+        coin_ico.renderTo(20+i*60,90) ;
+        textcost.setText(but_calls[i].cost) ;
+        textcost.printTo(30+i*60,80) ;
+     }
+   }
+   
    if (twilytime>0) {	  
      if (getNearMonsterIdx()!=-1) 
        twily.renderTo(210,400) ;            
@@ -341,14 +374,14 @@ function Render() {
 	}
 
    labmoney.setText(Math.round(money)) ;   
-   labmoney.printTo(400,20) ;
+   labmoney.printTo(650,60) ;
    labmonsterleft.setText(monsterleft+monsters.length) ;
-   labmonsterleft.printTo(500,20) ;
+   labmonsterleft.printTo(700,60) ;
    labcastle.setText(Math.round(100*castlehealth/balance.castlehealth)+"%") ;
    if (castlehealth/balance.castlehealth<0.33) labcastle.setColor(255,0,0) ; else
      if (castlehealth/balance.castlehealth<0.66) labcastle.setColor(255,255,0) ; else
        labcastle.setColor(0,255,0) ; 
-   labcastle.printTo(605,20) ;
+   labcastle.printTo(750,60) ;
    
     for (var i=0; i<stones.length; i++) 
      stone.renderTo(stones[i].x,stones[i].y) ;
@@ -418,7 +451,11 @@ function Frame(dt) {
  	   return true ;
 	}
 
-   money+=balance.moneyinc*dt ;
+   nextmoney-=dt ;
+   if (nextmoney<=0.0) {
+     money+=balance.moneyinc ;
+     nextmoney=1.0 ;
+   }
 
    // victory
    if ((monsterleft==0)&&(monsters.length==0)) {
@@ -563,8 +600,14 @@ function Frame(dt) {
 	   }
    }
    
+   if (game.isLeftButtonClicked()) {
+   var call_idx = -1 ;
+   for (var i=0; i<but_calls.length; i++) 
+     if (but_calls[i].but.isPointIn(mpos.x,mpos.y)) 
+       call_idx=i ;
+
    // twily call
-   if (game.isKeyDown(KEY_6)) { 
+   if (call_idx==5) { 
       if ((twilytime<=0)&&(money>=balance.twilycost)) {
         twilytime=balance.twilywork ;
         money-=balance.twilycost ;	
@@ -572,7 +615,7 @@ function Frame(dt) {
    }
    
    // rarity call
-   if (game.isKeyDown(KEY_5)) { 
+   if (call_idx==2) { 
       if ((raritytime<=0)&&(money>=balance.raritycost)) {
         raritytime=balance.raritywork ;
         money-=balance.raritycost ;
@@ -580,7 +623,7 @@ function Frame(dt) {
    }
    
    // flatter call
-   if (game.isKeyDown(KEY_4)) { 
+   if (call_idx==3) { 
       if ((flattertime<=0)&&(money>=balance.flattercost)) {
         flattertime=balance.flatterwork ;
         money-=balance.flattercost ;
@@ -588,7 +631,7 @@ function Frame(dt) {
    }
 
    // pinkie call
-   if (game.isKeyDown(KEY_2)) { 
+   if (call_idx==1) { 
       if ((pinkietime<=0)&&(money>=balance.pinkiecost)) {
         pinkietime=balance.pinkiework ;
         money-=balance.pinkiecost ;
@@ -596,7 +639,7 @@ function Frame(dt) {
    }
 
    // aj call
-   if (game.isKeyDown(KEY_1)) { 
+   if (call_idx==0) { 
       if ((!ajcalled)&&(money>=balance.ajcost)) {
         ajcalled=true ;
 		ajpos=100 ;
@@ -607,13 +650,14 @@ function Frame(dt) {
    }
    
    // rd call
-   if (game.isKeyDown(KEY_3)) { 
+   if (call_idx==4) { 
       if ((!rdcalled)&&(money>=balance.rainbowcost)) {
         rdcalled=true ;
 		stone_ok=0 ;
 		rdpos=-rainbow.getWidth() ;		
         money-=balance.rainbowcost ;
       }
+   }
    }
       
    if (game.isKeyDown(KEY_ESCAPE)) { 
