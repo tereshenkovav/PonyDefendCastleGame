@@ -2,6 +2,7 @@ var back ;
 var logo ;
 var langico ;
 var strings ;
+var title ;
 var rects_menu = new Array();
 var menu = new Array() ;
 
@@ -29,6 +30,10 @@ function loadLangResources() {
 
    langico = game.loadSprite('lang.png') ;
 
+   title = game.loadText("Celestia Redux Fixed.ttf",strings.gametitle,60) ;
+   title.setColor(220,220,220) ;
+   title.setAlignCenter() ;
+
    menu = [] ;
    menu.push(game.loadText("arial.ttf",strings.menustart,20)) ;
    menu.push(game.loadText("arial.ttf",strings.menudiff+": "+getDiffucultText(system.getDifficult()),20)) ;
@@ -42,7 +47,7 @@ function loadLangResources() {
 function getSelMenuIdx() {
    var mpos = game.getMousePos() ;
    for (var i=0; i<menu.length; i++) 
-     if ((mpos.x>340)&&(mpos.y>200+i*32)&&(mpos.y<200+i*32+32)) 
+     if ((mpos.x>340)&&(mpos.y>200+i*36)&&(mpos.y<200+i*36+32)) 
        return i ;
    return -1 ;  
 }
@@ -62,14 +67,16 @@ function Init() {
 function Render() {
    back.renderTo(0,182) ;
 
+   title.printTo(400,40) ;
+
    renderRects(rects_menu,250,160,320,330) ;
 
    var selidx = getSelMenuIdx() ;
    for (var i=0; i<menu.length; i++) {
-     if (i==selidx) menu[i].setColor(255,255,255) ; else menu[i].setColor(150,150,150) ;
-     menu[i].printTo(340,200+i*32) ;
+     if (i==selidx) menu[i].setColor(255,255,255) ; else menu[i].setColor(180,180,180) ;
+     menu[i].printTo(340,200+i*36) ;
    }
-   langico.renderTo(340+menu[MENU_LANG].getTextWidth()+30,200+MENU_LANG*32+12) ;
+   langico.renderTo(340+menu[MENU_LANG].getTextWidth()+30,200+MENU_LANG*36+12) ;
 
    return true ;
 }

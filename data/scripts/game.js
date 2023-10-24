@@ -11,8 +11,6 @@ var coin ;
 var monsterico ;
 var castleico ;
 var stone ;
-var sfail ;
-var swin ;
 var fire ;
 var strings ;
 
@@ -66,6 +64,18 @@ var gameover ;
 var iswin ;
 var mindt ;
 var maxdt ;
+
+var rects_gameover = new Array();
+var text_closeconfirm ;
+var but_yes ;
+var but_no ;
+var but_restart ;
+var but_continue ;
+var but_menu ;
+
+var ispause ;
+
+$include<rects.inc>
 
 const STONE_COUNT = 5 ;
 
@@ -126,6 +136,16 @@ function Init() {
 
    strings = system.loadObject("strings.json") ;
 
+   makeRects(rects_gameover) ;
+
+   text_closeconfirm = game.loadText("arial.ttf",strings.textexitconfirm,22) ;
+   text_closeconfirm.setColor(200,200,200) ;
+   but_yes = game.loadText("arial.ttf",strings.text_yes,22) ;
+   but_no = game.loadText("arial.ttf",strings.text_no,22) ;
+   but_restart = game.loadText("arial.ttf",strings.text_restart,22) ;
+   but_continue = game.loadText("arial.ttf",strings.text_continue,22) ;
+   but_menu = game.loadText("arial.ttf",strings.text_menu,22) ;
+
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
    castle = game.loadSprite('castle.png') ;
@@ -133,11 +153,6 @@ function Init() {
    stone = game.loadSprite('stone.png') ;
    fire = game.loadAnimation('fire.png',100,100,15,15) ;
    fire.play() ;
-
-   swin = game.loadSprite('win.png') ;
-   swin.setAlpha(175) ;
-   sfail = game.loadSprite('fail.png') ;
-   sfail.setAlpha(175) ;
 
    coin = game.loadSprite('coin.png') ;
    monsterico = game.loadSprite('monster_ico.png') ;
@@ -217,8 +232,9 @@ function Init() {
    labmonsterleft.setColor(255,255,255) ;
    labcastle = game.loadText("Arial.ttf","",20) ;
    labcastle.setColor(0,255,0) ;
-   labgameover = game.loadText("Arial.ttf","",48) ;
+   labgameover = game.loadText("Arial.ttf","",22) ;
    labgameover.setColor(255,255,255) ;
+   labgameover.setAlignCenter() ;
 
    textcost = game.loadText("Arial.ttf","",16) ;
    textcost.setColor(255,255,255) ;
@@ -247,6 +263,8 @@ function Init() {
    
    mindt=999 ;
    maxdt=0 ;
+
+   ispause = false ;
 
    return true ;
 }
@@ -336,26 +354,70 @@ function Render() {
      stone.renderTo(stones[i].x,stones[i].y) ;
    
 	if (gameover) {
-		if (iswin) {
-			swin.renderTo(400,300) ;
+                renderRects(rects_gameover,250,220,300,160) ;
+		if (iswin) {			
 			labgameover.setText(strings.textwin) ;
+			labgameover.setColor(40,200,40) ;
+   if (but_continue.isPointIn(mp.x,mp.y)) but_continue.setColor(255,255,255) ; else but_continue.setColor(180,180,180) ;
+   but_continue.printTo(310,310) ;
 		}
 		else {
-			sfail.renderTo(400,300) ;		
 			labgameover.setText(strings.textfail) ;
+			labgameover.setColor(200,40,40) ;
+   if (but_restart.isPointIn(mp.x,mp.y)) but_restart.setColor(255,255,255) ; else but_restart.setColor(180,180,180) ;
+   but_restart.printTo(310,310) ;
 		}
-		labgameover.printTo(280,260) ;	
+		labgameover.printTo(400,260) ;	
+   if (but_menu.isPointIn(mp.x,mp.y)) but_menu.setColor(255,255,255) ; else but_menu.setColor(180,180,180) ;
+   but_menu.printTo(430,310) ;
+
 	}
+
+	
+   if (ispause) {
+   renderRects(rects_gameover,250,220,300,160) ;
+   text_closeconfirm.printTo(320,250) ;
+
+   if (but_yes.isPointIn(mp.x,mp.y)) but_yes.setColor(255,255,255) ; else but_yes.setColor(180,180,180) ;
+   but_yes.printTo(340,310) ;
+   if (but_no.isPointIn(mp.x,mp.y)) but_no.setColor(255,255,255) ; else but_no.setColor(180,180,180) ;
+   but_no.printTo(420,310) ;
+   }
 
    return true ;
 }
 
 function Frame(dt) {
-	if (gameover) return true ;
+   var mpos = game.getMousePos() ;
+
+	if (gameover) {
+   if (game.isKeyDown(KEY_ESCAPE)) game.goToScript("menu",null) ;      
+
+   if (game.isLeftButtonClicked()) {
+     if (iswin) {
+       if (but_continue.isPointIn(mpos.x,mpos.y)) game.goToScript("game",null) ;
+     }
+     else {
+       if (but_restart.isPointIn(mpos.x,mpos.y)) game.goToScript("game",null) ;
+     }
+     if (but_menu.isPointIn(mpos.x,mpos.y)) game.goToScript("menu",null) ;
+   }
+ 	   return true ;
+	}
 	
 	if (mindt>dt) mindt=dt ;
 	if (maxdt<dt) maxdt=dt ;
-	
+
+	if (ispause) {
+   if (game.isKeyDown(KEY_ESCAPE)) ispause=false ;      
+
+   if (game.isLeftButtonClicked()) {
+     if (but_yes.isPointIn(mpos.x,mpos.y)) game.goToScript("menu",null) ;      
+     if (but_no.isPointIn(mpos.x,mpos.y)) ispause=false ;
+   }
+ 	   return true ;
+	}
+
    money+=balance.moneyinc*dt ;
 
    // victory
@@ -554,6 +616,9 @@ function Frame(dt) {
       }
    }
       
+   if (game.isKeyDown(KEY_ESCAPE)) { 
+     ispause=true ;
+   }
    return true ;
 }
 

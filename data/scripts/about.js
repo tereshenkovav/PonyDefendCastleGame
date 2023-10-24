@@ -59,6 +59,7 @@ function Render() {
 
 function Frame(dt) {
    if (game.isOneOfKeysDown([KEY_ESCAPE,KEY_SPACE,KEY_ENTER])) game.goToScript("menu",null) ;
+   if (game.isLeftButtonClicked()) game.goToScript("menu",null) ;
 
    return true ;
 }
