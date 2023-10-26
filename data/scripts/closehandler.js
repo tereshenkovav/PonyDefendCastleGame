@@ -2,11 +2,14 @@ var rects_gameover = new Array();
 var text_closeconfirm ;
 var but_yes ;
 var but_no ;
+var cursor ;
 
 $include<rects.inc>
 
 function Init(args) {
    strings = system.loadObject("strings.json") ;
+   cursor = game.loadSprite("cursor.png") ;
+   cursor.setHotSpot(0,0) ;
    
    makeRects(rects_gameover) ;
 
@@ -30,6 +33,8 @@ function Render() {
    but_yes.printTo(340,310) ;
    if (but_no.isPointIn(mpos.x,mpos.y)) but_no.setColor(255,255,255) ; else but_no.setColor(180,180,180) ;
    but_no.printTo(420,310) ;
+
+   cursor.renderTo(mpos.x,mpos.y) ;
 
    return true ;
 }

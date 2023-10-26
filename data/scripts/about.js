@@ -5,6 +5,7 @@ var text_title ;
 var text_ver ;
 var rects_help = new Array();
 var credits_str ;
+var cursor ;
 
 $include<rects.inc>
 
@@ -15,6 +16,8 @@ function Init() {
    
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
+   cursor = game.loadSprite("cursor.png") ;
+   cursor.setHotSpot(0,0) ;
 
    text_about = game.loadText("arial.ttf","",20) ;
    text_about.setColor(200,200,200) ;
@@ -54,6 +57,10 @@ function Render() {
    text_title.printTo(400,280) ;
    text_about.setText(credits_str) ;
    text_about.printTo(100,330) ;
+
+   var mpos = game.getMousePos() ;
+   cursor.renderTo(mpos.x,mpos.y) ;
+
    return true ;
 }
 

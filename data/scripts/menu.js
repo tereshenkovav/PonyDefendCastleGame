@@ -5,6 +5,7 @@ var strings ;
 var title ;
 var rects_menu = new Array();
 var menu = new Array() ;
+var cursor ;
 
 const MENU_START = 0 ;
 const MENU_DIFFICULT = 1 ;
@@ -56,6 +57,8 @@ function Init() {
    loadLangResources() ;
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
+   cursor = game.loadSprite("cursor.png") ;
+   cursor.setHotSpot(0,0) ;
 
    game.setBackgroundColor(0,100,200) ;
 
@@ -77,6 +80,9 @@ function Render() {
      menu[i].printTo(340,200+i*36) ;
    }
    langico.renderTo(340+menu[MENU_LANG].getTextWidth()+30,200+MENU_LANG*36+12) ;
+
+   var mpos = game.getMousePos() ;
+   cursor.renderTo(mpos.x,mpos.y) ;
 
    return true ;
 }

@@ -3,6 +3,7 @@ var strings ;
 var text_help ;
 var text_title ;
 var rects_help = new Array();
+var cursor ;
 
 $include<rects.inc>
 
@@ -13,6 +14,8 @@ function Init() {
    
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
+   cursor = game.loadSprite("cursor.png") ;
+   cursor.setHotSpot(0,0) ;
 
    text_help = game.loadText("arial.ttf",strings.help_text,18) ;
    text_help.setColor(200,200,200) ;
@@ -33,6 +36,10 @@ function Render() {
 
    text_title.printTo(400,80) ;
    text_help.printTo(100,140) ;
+
+   var mpos = game.getMousePos() ;
+   cursor.renderTo(mpos.x,mpos.y) ;
+
    return true ;
 }
 

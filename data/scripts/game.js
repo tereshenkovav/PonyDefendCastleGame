@@ -16,6 +16,7 @@ var castleico ;
 var stone ;
 var fire ;
 var strings ;
+var cursor ;
 
 var snd_laser ;
 var snd_galop ;
@@ -160,6 +161,8 @@ function Init() {
 
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
+   cursor = game.loadSprite("cursor.png") ;
+   cursor.setHotSpot(0,0) ;
    castle = game.loadSprite('castle.png') ;
    castle.setHotSpot(0,0) ;
    stone = game.loadSprite('stone.png') ;
@@ -447,6 +450,8 @@ function Render() {
    if (but_no.isPointIn(mp.x,mp.y)) but_no.setColor(255,255,255) ; else but_no.setColor(180,180,180) ;
    but_no.printTo(420,310) ;
    }
+
+   cursor.renderTo(mp.x,mp.y) ;
 
    return true ;
 }
