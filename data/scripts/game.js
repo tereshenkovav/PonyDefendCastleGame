@@ -8,6 +8,8 @@ var aj ;
 var pinkie ;
 var celestia ;
 var ray ;
+var luna ;
+var stun ;
 var rarity ;
 var coin ;
 var coin_ico ;
@@ -43,6 +45,7 @@ var textspeed ;
 var textmenu ;
 
 var monster = new Array() ;
+var monster_sleep = new Array() ;
 var monstertypes = new Array() ;
 var stones = new Array() ;
 
@@ -58,6 +61,7 @@ var stone_ok ;
 var balance ;
 var gamespeed ;
 var celestiapos ;
+var lunapos ;
 
 var twilytime ;
 var raritytime ;
@@ -67,6 +71,7 @@ var pinkietime ;
 var ajcalled ;
 var rdcalled ;
 var celestiacalled ;
+var lunacalled ;
 var nextmonster ;
 var nextmoney ;
 
@@ -213,12 +218,9 @@ function Init() {
    but_calls.push({ but : createButton('icons/twily_ico.png'),
                     but_gray : createButton('icons/twily_ico.png'),
                     cost : balance.twilycost, cost_d : 0 }) ;
-   but_calls.push({ but : createButton('icons/cadence_ico.png'),
-                    but_gray : createButton('icons/cadence_ico.png'),
-                    cost : 0, cost_d : 5 }) ;
    but_calls.push({ but : createButton('icons/luna_ico.png'),
                     but_gray : createButton('icons/luna_ico.png'),
-                    cost : 0, cost_d : 10 }) ;
+                    cost : 0, cost_d : balance.lunacost_d }) ;
    but_calls.push({ but : createButton('icons/celestia_ico.png'),
                     but_gray : createButton('icons/celestia_ico.png'),
                     cost : 0, cost_d : balance.celestiacost_d }) ;
@@ -278,14 +280,23 @@ function Init() {
    celestia.play() ;
    ray = game.loadAnimation("yellow_ray.png",80,30,8,8) ;
    ray.play() ;
+   luna = game.loadAnimation("luna_walk.png",160,168,6,6) ;
+   luna.play() ;
+   stun = game.loadAnimation("stun.png",70,70,7,7) ;
+   stun.play() ;
 
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m1",25),10)) ;
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m2",8),8)) ;
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m3",8),8)) ;
+
+   monster_sleep.push(game.loadSprite("monsters/m1/6.gif")) ;
+   monster_sleep.push(game.loadSprite("monsters/m2/7.gif")) ;
+   monster_sleep.push(game.loadSprite("monsters/m3/0.gif")) ;
    
    for (var i=0; i<monster.length; i++) {
      monster[i].setHotSpot(monster[i].getWidth()/2,monster[i].getHeight()) ;
      monster[i].play() ;
+     monster_sleep[i].setHotSpot(monster_sleep[i].getWidth()/2,monster_sleep[i].getHeight()) ;
    }
    
    monstertypes.push(system.loadObject("scripts/monstertype1.json")) ;
@@ -323,6 +334,7 @@ function Init() {
    twilytime=-1 ;
    ajcalled=false ;
    celestiacalled=false ;
+   lunacalled=false ;
    rdcalled=false ;
    raritytime=-1 ;
    flattertime=-1 ;
@@ -400,8 +412,12 @@ function Render() {
    
    
 	for (var i=0; i<monsters.length; i++) {
-		var teksprite = monster[monsters[i].mtype] ;
-     teksprite.renderTo(monsters[i].x,575) ;
+         if (monsters[i].sleep) {
+            monster_sleep[monsters[i].mtype].renderTo(monsters[i].x,575) ;
+            stun.renderTo(monsters[i].x,575-monster_sleep[monsters[i].mtype].getHeight()) ;
+         }
+         else
+            monster[monsters[i].mtype].renderTo(monsters[i].x,575) ;
 	 var proc = monsters[i].health/monsters[i].maxhealth ;	 
 	 if (proc<0.33) drawInd(linemonsterhealthred,monsters[i].x,proc) ; else
 	 if (proc<0.66) drawInd(linemonsterhealthyellow,monsters[i].x,proc) ; else
@@ -428,6 +444,11 @@ function Render() {
       }
       celestia.renderTo(celestiapos,540) ;
 	}
+
+	if (lunacalled) {
+      luna.renderTo(lunapos,540) ;
+	}
+
 
    
 // laser only
@@ -620,14 +641,14 @@ function Frame(dt) {
         var midx = getRandomInt(0,2) ;
         monsters.push({ x: 800, mtype: midx, speed: monstertypes[midx].speed,
 		   attack: monstertypes[midx].attack, health: monstertypes[midx].health, 
-		   maxhealth: monstertypes[midx].health }) ;      
+		   maxhealth: monstertypes[midx].health, sleep: false }) ;
 	  }
    
    // monster processing
    var ajused=false ;
    for (var i=0; i<monsters.length; i++) {
 	   var mstop = false ;
-	   if (monsters[i].x<=200) {
+	   if ((monsters[i].x<=200)&&(!monsters[i].sleep)) {
 		   castlehealth-=monsters[i].attack*dt ;
 		   mstop=true ;		      
 	   }
@@ -636,19 +657,23 @@ function Frame(dt) {
 			if (ajpos+aj.getWidth()>=monsters[i].x) {
 				mstop=true ;
 				monsters[i].health-=getAttackMul()*balance.ajattack*dt ;
-				ajhealth-=monsters[i].attack*dt ;
+				if (!monsters[i].sleep) ajhealth-=monsters[i].attack*dt ;
 				ajused=true ;
 			}
 	   }
 
 	   if (celestiacalled && (celestiapos>100))
              monsters[i].health-=balance.celestiaattack*dt ;
-			
+
+	   if (lunacalled && (lunapos>100)) monsters[i].sleep=true ;
+
+	   if (!monsters[i].sleep) {
 	   if (flattertime>0) {			
 	     monsters[i].x+=0.5*monsters[i].speed*dt ;
 	   }
 	   else {
 	     if (!mstop) monsters[i].x-=monsters[i].speed*dt ;
+	   }
 	   }
    }
 
@@ -686,6 +711,11 @@ function Frame(dt) {
    if (celestiacalled) {
 	   celestiapos+=80*dt ;
 	   if (celestiapos>200) celestiacalled=false ;
+   }
+
+   if (lunacalled) {
+	   lunapos+=80*dt ;
+	   if (lunapos>200) lunacalled=false ;
    }
    
    if (game.isLeftButtonClicked()) {
@@ -753,8 +783,16 @@ function Frame(dt) {
         money-=balance.rainbowcost ;
       }
    }
+   // luna call
+   if (call_idx==6) { 
+      if ((!lunacalled)&&(money_d>=balance.lunacost_d)) {
+        lunacalled=true ;
+	lunapos=-80 ;
+        money_d-=balance.lunacost_d ;
+      }
+   }
    // celestia call
-   if (call_idx==8) { 
+   if (call_idx==7) { 
       if ((!celestiacalled)&&(money_d>=balance.celestiacost_d)) {
         celestiacalled=true ;
 	celestiapos=-80 ;
