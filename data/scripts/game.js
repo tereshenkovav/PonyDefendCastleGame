@@ -6,6 +6,8 @@ var rainbow ;
 var flatter ;
 var aj ;
 var pinkie ;
+var celestia ;
+var ray ;
 var rarity ;
 var coin ;
 var coin_ico ;
@@ -55,6 +57,7 @@ var ajpos ;
 var stone_ok ;
 var balance ;
 var gamespeed ;
+var celestiapos ;
 
 var twilytime ;
 var raritytime ;
@@ -63,6 +66,7 @@ var pinkietime ;
 
 var ajcalled ;
 var rdcalled ;
+var celestiacalled ;
 var nextmonster ;
 var nextmoney ;
 
@@ -215,9 +219,9 @@ function Init() {
    but_calls.push({ but : createButton('icons/luna_ico.png'),
                     but_gray : createButton('icons/luna_ico.png'),
                     cost : 0, cost_d : 10 }) ;
-   but_calls.push({ but : createButton('icons/cadence_ico.png'),
+   but_calls.push({ but : createButton('icons/celestia_ico.png'),
                     but_gray : createButton('icons/celestia_ico.png'),
-                    cost : 0, cost_d : 25 }) ;
+                    cost : 0, cost_d : balance.celestiacost_d }) ;
 
    for (var i=0; i<but_calls.length; i++) 
      but_calls[i].but_gray.convertPixels("sys_gray") ;
@@ -270,6 +274,11 @@ function Init() {
    rarity = game.loadAnimationFromFiles(createFrameArray("rarity",19),19) ;
    rarity.play() ;
 
+   celestia = game.loadAnimation("celestia_walk.png",160,168,6,6) ;
+   celestia.play() ;
+   ray = game.loadAnimation("yellow_ray.png",80,30,8,8) ;
+   ray.play() ;
+
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m1",25),10)) ;
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m2",8),8)) ;
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m3",8),8)) ;
@@ -307,12 +316,13 @@ function Init() {
    flatterpos=200 ;
 
    money=balance.initmoney ;
-   money_d=0 ;
+   money_d=balance.initmoney_d ;
    monsterleft=balance.initmonsters ;
    castlehealth=balance.castlehealth ;
   
    twilytime=-1 ;
    ajcalled=false ;
+   celestiacalled=false ;
    rdcalled=false ;
    raritytime=-1 ;
    flattertime=-1 ;
@@ -406,6 +416,17 @@ function Render() {
 	 if (proc<0.66) drawInd(linemonsterhealthyellow,ajpos,proc) ; else
 	 drawInd(linemonsterhealthgreen,ajpos,proc) ;
 //   
+	}
+
+	if (celestiacalled) {
+      if (celestiapos>100) {
+         var rpos = celestiapos+60 ;
+         while (rpos-40<800) {
+           ray.renderTo(rpos,510) ;
+           rpos+=80 ;
+         } 
+      }
+      celestia.renderTo(celestiapos,540) ;
 	}
 
    
@@ -619,6 +640,9 @@ function Frame(dt) {
 				ajused=true ;
 			}
 	   }
+
+	   if (celestiacalled && (celestiapos>100))
+             monsters[i].health-=balance.celestiaattack*dt ;
 			
 	   if (flattertime>0) {			
 	     monsters[i].x+=0.5*monsters[i].speed*dt ;
@@ -657,6 +681,11 @@ function Frame(dt) {
 		   ajcalled=false ;	   
 		   snd_galop.stop() ;
 	   }
+   }
+
+   if (celestiacalled) {
+	   celestiapos+=80*dt ;
+	   if (celestiapos>200) celestiacalled=false ;
    }
    
    if (game.isLeftButtonClicked()) {
@@ -724,6 +753,15 @@ function Frame(dt) {
         money-=balance.rainbowcost ;
       }
    }
+   // celestia call
+   if (call_idx==8) { 
+      if ((!celestiacalled)&&(money_d>=balance.celestiacost_d)) {
+        celestiacalled=true ;
+	celestiapos=-80 ;
+        money_d-=balance.celestiacost_d ;
+      }
+   }
+
    }
       
    if (game.isKeyDown(KEY_ESCAPE)) { 
