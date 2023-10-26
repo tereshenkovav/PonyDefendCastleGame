@@ -9,6 +9,8 @@ var pinkie ;
 var rarity ;
 var coin ;
 var coin_ico ;
+var diamond ;
+var diamond_ico ;
 var monsterico ;
 var castleico ;
 var stone ;
@@ -24,6 +26,7 @@ var laser ;
 var mnear ;
 
 var labmoney ;
+var labdiamond ;
 var labmonsterleft ;
 var labcastle ;
 var labgameover ;
@@ -41,6 +44,7 @@ var stones = new Array() ;
 var rdpos ;
 var flatterpos ;
 var money ;
+var money_d ;
 var monsterleft ;
 var castlehealth ;
 var ajhealth ;
@@ -166,26 +170,39 @@ function Init() {
    coin_ico = game.loadSprite('coin.png') ;
    coin_ico.setScale(50) ;
 
+   diamond = game.loadSprite('diamond.png') ;
+   diamond_ico = game.loadSprite('diamond.png') ;
+   diamond_ico.setScale(50) ;
+
    monsterico = game.loadSprite('monster_ico.png') ;
    castleico = game.loadSprite('castle_ico.png') ;
    but_calls.push({ but : createButton('icons/applejack_ico.png'),
                     but_gray : createButton('icons/applejack_ico.png'), 
-                    cost : balance.ajcost }) ;
+                    cost : balance.ajcost, cost_d : 0 }) ;
    but_calls.push({ but : createButton('icons/pinki_ico.png'),
                     but_gray : createButton('icons/pinki_ico.png'),
-                    cost : balance.pinkiecost }) ;
+                    cost : balance.pinkiecost, cost_d : 0 }) ;
    but_calls.push({ but : createButton('icons/rarity_ico.png'),
                     but_gray : createButton('icons/rarity_ico.png'),
-                    cost : balance.raritycost }) ;
+                    cost : balance.raritycost, cost_d : 0 }) ;
    but_calls.push({ but : createButton('icons/flatter_ico.png'),
                     but_gray : createButton('icons/flatter_ico.png'),
-                    cost : balance.flattercost }) ;
+                    cost : balance.flattercost, cost_d : 0 }) ;
    but_calls.push({ but : createButton('icons/rainbow_ico.png'),
                     but_gray : createButton('icons/rainbow_ico.png'),
-                    cost : balance.rainbowcost }) ;
+                    cost : balance.rainbowcost, cost_d : 0 }) ;
    but_calls.push({ but : createButton('icons/twily_ico.png'),
                     but_gray : createButton('icons/twily_ico.png'),
-                    cost : balance.twilycost }) ;
+                    cost : balance.twilycost, cost_d : 0 }) ;
+   but_calls.push({ but : createButton('icons/cadence_ico.png'),
+                    but_gray : createButton('icons/cadence_ico.png'),
+                    cost : 0, cost_d : 5 }) ;
+   but_calls.push({ but : createButton('icons/luna_ico.png'),
+                    but_gray : createButton('icons/luna_ico.png'),
+                    cost : 0, cost_d : 10 }) ;
+   but_calls.push({ but : createButton('icons/cadence_ico.png'),
+                    but_gray : createButton('icons/celestia_ico.png'),
+                    cost : 0, cost_d : 25 }) ;
 
    for (var i=0; i<but_calls.length; i++) 
      but_calls[i].but_gray.convertPixels("funcGray") ;
@@ -251,6 +268,9 @@ function Init() {
    monstertypes.push(system.loadObject("scripts/monstertype2.json")) ;
    monstertypes.push(system.loadObject("scripts/monstertype3.json")) ;
       
+   labdiamond = game.loadText("Arial.ttf","",20) ;
+   labdiamond.setColor(255,255,255) ;
+   labdiamond.setAlignCenter() ;
    labmoney = game.loadText("Arial.ttf","",20) ;
    labmoney.setColor(255,255,255) ;
    labmoney.setAlignCenter() ;
@@ -272,6 +292,7 @@ function Init() {
    flatterpos=200 ;
 
    money=balance.initmoney ;
+   money_d=0 ;
    monsterleft=balance.initmonsters ;
    castlehealth=balance.castlehealth ;
   
@@ -300,12 +321,13 @@ function Render() {
 	var mp = game.getMousePos() ;   
 	
    back.renderTo(0,182) ;
+   diamond.renderTo(600,30) ;
    coin.renderTo(650,30) ;
    monsterico.renderTo(700,30) ;
    castleico.renderTo(750,30) ;
       
    for (var i=0; i<but_calls.length; i++) {
-     if (but_calls[i].cost<=money) {
+     if ((but_calls[i].cost<=money)&&(but_calls[i].cost_d<=money_d)) {
      circle.renderTo(40+i*60,40) ;
      if (but_calls[i].but.isPointIn(mp.x,mp.y))
        but_calls[i].but.setColor(255,255,255) ; 
@@ -323,6 +345,13 @@ function Render() {
         textcost.setText(but_calls[i].cost) ;
         textcost.printTo(30+i*60,80) ;
      }
+     else
+     if (but_calls[i].cost_d>0) {
+        diamond_ico.renderTo(30+i*60,90) ;
+        textcost.setText(but_calls[i].cost_d) ;
+        textcost.printTo(40+i*60,80) ;
+     }
+
    }
    
    if (twilytime>0) {	  
@@ -373,6 +402,8 @@ function Render() {
 					laser.drawTo(240,372,monsters[idx].x+dx,550+dy) ;     
 	}
 
+   labdiamond.setText(Math.round(money_d)) ;
+   labdiamond.printTo(600,60) ;
    labmoney.setText(Math.round(money)) ;   
    labmoney.printTo(650,60) ;
    labmonsterleft.setText(monsterleft+monsters.length) ;
@@ -574,8 +605,10 @@ function Frame(dt) {
    // monster removing
    var i=0 ;
    while (i<monsters.length) {
-	   if (monsters[i].health<=0)
+	   if (monsters[i].health<=0) {
 		   monsters.splice(i,1) ;
+		   money_d++ ;
+	   }
 	   else
 		   i++ ;
    }   
