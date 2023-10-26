@@ -86,7 +86,6 @@ var circle_gray ;
 var ispause ;
 
 $include<rects.inc>
-$include<funcs.inc>
 
 const STONE_COUNT = 5 ;
 
@@ -221,7 +220,7 @@ function Init() {
                     cost : 0, cost_d : 25 }) ;
 
    for (var i=0; i<but_calls.length; i++) 
-     but_calls[i].but_gray.convertPixels("funcGray") ;
+     but_calls[i].but_gray.convertPixels("sys_gray") ;
 
    laser = game.createLine(255,0,255) ;
 
