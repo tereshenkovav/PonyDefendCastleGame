@@ -119,6 +119,8 @@ int main(int argc, char *argv[])
         }
         }
 
+        game->setMousePos(sf::Mouse::getPosition(window).x,sf::Mouse::getPosition(window).y) ;
+
         window.clear();
         game->Render(&window) ;
         window.display();
