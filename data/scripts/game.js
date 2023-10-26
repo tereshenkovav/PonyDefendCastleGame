@@ -37,6 +37,8 @@ var linemonsterhealthred ;
 var linemonsterhealthyellow ;
 
 var textcost ;
+var textspeed ;
+var textmenu ;
 
 var monster = new Array() ;
 var monstertypes = new Array() ;
@@ -52,6 +54,7 @@ var ajhealth ;
 var ajpos ;
 var stone_ok ;
 var balance ;
+var gamespeed ;
 
 var twilytime ;
 var raritytime ;
@@ -70,6 +73,7 @@ var mindt ;
 var maxdt ;
 
 var rects_gameover = new Array();
+var rects_menu = new Array();
 var text_closeconfirm ;
 var but_yes ;
 var but_no ;
@@ -147,6 +151,7 @@ function Init() {
    balance = system.loadObject("scripts/balance.json") ;
 
    makeRects(rects_gameover) ;
+   makeRectsMini(rects_menu) ;
 
    text_closeconfirm = game.loadText("arial.ttf",strings.textexitconfirm,22) ;
    text_closeconfirm.setColor(200,200,200) ;
@@ -155,6 +160,14 @@ function Init() {
    but_restart = game.loadText("arial.ttf",strings.text_restart,22) ;
    but_continue = game.loadText("arial.ttf",strings.text_continue,22) ;
    but_menu = game.loadText("arial.ttf",strings.text_menu,22) ;
+
+   textspeed = game.loadText("arial.ttf","",16) ;
+   textspeed.setColor(200,200,200) ;
+   textspeed.setAlignCenter() ;
+
+   textexit = game.loadText("arial.ttf",strings.menuexit,16) ;
+   textexit.setColor(200,200,200) ;
+   textexit.setAlignCenter() ;
 
    circle = game.loadSprite('circle.png') ;
    circle_gray = game.loadSprite('circle_gray.png') ;
@@ -311,7 +324,8 @@ function Init() {
 
    setNextMonster() ;
    nextmoney = 1.0 ;
-   
+   gamespeed = 1 ;
+
    mindt=999 ;
    maxdt=0 ;
 
@@ -324,10 +338,10 @@ function Render() {
 	var mp = game.getMousePos() ;   
 	
    back.renderTo(0,182) ;
-   diamond.renderTo(600,30) ;
-   coin.renderTo(650,30) ;
-   monsterico.renderTo(700,30) ;
-   castleico.renderTo(750,30) ;
+   diamond.renderTo(590,80) ;
+   coin.renderTo(640,80) ;
+   monsterico.renderTo(690,80) ;
+   castleico.renderTo(740,80) ;
       
    for (var i=0; i<but_calls.length; i++) {
      if ((but_calls[i].cost<=money)&&(but_calls[i].cost_d<=money_d)) {
@@ -406,16 +420,16 @@ function Render() {
 	}
 
    labdiamond.setText(Math.round(money_d)) ;
-   labdiamond.printTo(600,60) ;
+   labdiamond.printTo(590,110) ;
    labmoney.setText(Math.round(money)) ;   
-   labmoney.printTo(650,60) ;
+   labmoney.printTo(640,110) ;
    labmonsterleft.setText(monsterleft+monsters.length) ;
-   labmonsterleft.printTo(700,60) ;
+   labmonsterleft.printTo(690,110) ;
    labcastle.setText(Math.round(100*castlehealth/balance.castlehealth)+"%") ;
    if (castlehealth/balance.castlehealth<0.33) labcastle.setColor(255,0,0) ; else
      if (castlehealth/balance.castlehealth<0.66) labcastle.setColor(255,255,0) ; else
        labcastle.setColor(0,255,0) ; 
-   labcastle.printTo(750,60) ;
+   labcastle.printTo(740,110) ;
    
     for (var i=0; i<stones.length; i++) 
      stone.renderTo(stones[i].x,stones[i].y) ;
@@ -451,6 +465,13 @@ function Render() {
    but_no.printTo(420,310) ;
    }
 
+   renderRects(rects_menu,570,20,120,30) ;
+   textspeed.setText(strings.text_speed+gamespeed) ;
+   textspeed.printTo(630,25) ;
+
+   renderRects(rects_menu,710,20,70,30) ;
+   textexit.printTo(745,25) ;
+
    cursor.renderTo(mp.x,mp.y) ;
 
    return true ;
@@ -458,6 +479,7 @@ function Render() {
 
 function Frame(dt) {
    var mpos = game.getMousePos() ;
+   dt*=gamespeed ;
 
 	if (gameover) {
    if (game.isKeyDown(KEY_ESCAPE)) game.goToScript("menu",null) ;      
@@ -639,6 +661,13 @@ function Frame(dt) {
    }
    
    if (game.isLeftButtonClicked()) {
+
+     if (textexit.isPointIn(mpos.x,mpos.y)) ispause=true ;
+     if (textspeed.isPointIn(mpos.x,mpos.y)) {
+       if (gamespeed==1) gamespeed=2 ; else
+       if (gamespeed==2) gamespeed=4 ; else gamespeed=1 ;
+     }
+
    var call_idx = -1 ;
    for (var i=0; i<but_calls.length; i++) 
      if (but_calls[i].but.isPointIn(mpos.x,mpos.y)) 
