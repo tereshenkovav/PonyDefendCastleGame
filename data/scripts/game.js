@@ -149,11 +149,24 @@ function isUnderFire() {
 	return castlehealth/balance.castlehealth<0.5 ;
 }
 
+function updateBalanceByDifficult() {
+   if (system.getDifficult()==0) balance.moneyinc=1.3*balance.moneyinc ;
+}
+
+function updateMonstersByDifficult() {
+   if (system.getDifficult()==2) 
+      for (var i=0; i<monstertypes.length; i++) {
+         monstertypes[i].attack=1.3*monstertypes[i].attack ;
+         monstertypes[i].health=1.3*monstertypes[i].health ;
+      }
+}
+
 function Init(args) {
 
    strings = system.loadObject("strings.json") ;
 
    balance = system.loadObject("scripts/balance.json") ;
+   updateBalanceByDifficult() ;
 
    teklevel = args.level ;
 
@@ -301,7 +314,8 @@ function Init(args) {
    monstertypes.push(system.loadObject("scripts/monstertype1.json")) ;
    monstertypes.push(system.loadObject("scripts/monstertype2.json")) ;
    monstertypes.push(system.loadObject("scripts/monstertype3.json")) ;
-      
+   updateMonstersByDifficult() ;
+   
    labdiamond = game.loadText("Arial.ttf","",20) ;
    labdiamond.setColor(255,255,255) ;
    labdiamond.setAlignCenter() ;

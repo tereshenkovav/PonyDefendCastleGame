@@ -25,7 +25,6 @@ function Init() {
    system.showCursor(false) ;
 
    system.setDifficultCount(3) ;
-   system.setDifficult(1) ;
 
    game.setBackgroundColor(0,100,200) ;
    

@@ -3,6 +3,7 @@ var logo ;
 var langico ;
 var strings ;
 var title ;
+var profile ;
 var rects_menu = new Array();
 var menu = new Array() ;
 var cursor ;
@@ -16,6 +17,7 @@ const MENU_ABOUT = 5 ;
 const MENU_EXIT = 6 ;
 
 $include<rects.inc>
+$include<profile.inc>
 
 function getDiffucultText(code) {
    if (code==0) return strings.text_easy ;
@@ -54,6 +56,9 @@ function getSelMenuIdx() {
 }
 
 function Init() {    
+   profile = loadProfile() ;
+   system.setDifficult(profile.difficult) ;
+
    loadLangResources() ;
    back = game.loadSprite('back.png') ;
    back.setHotSpot(0,0) ;
@@ -96,6 +101,8 @@ function Frame(dt) {
       if (selmenu==MENU_DIFFICULT) {
         system.switchDifficult() ;
         menu[MENU_DIFFICULT].setText(strings.menudiff+": "+getDiffucultText(system.getDifficult()),20) ;
+        profile.difficult=system.getDifficult() ;
+        saveProfile(profile) ;
       }
       if (selmenu==MENU_LANG) {
         system.switchCurrentLanguage() ;
