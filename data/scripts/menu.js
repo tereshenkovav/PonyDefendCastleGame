@@ -92,7 +92,7 @@ function Frame(dt) {
    var selmenu = getSelMenuIdx() ;
 
    if (game.isLeftButtonClicked()) {
-      if (selmenu==MENU_START) game.goToScript("game",null) ;
+      if (selmenu==MENU_START) game.goToScript("levels",null) ;
       if (selmenu==MENU_DIFFICULT) {
         system.switchDifficult() ;
         menu[MENU_DIFFICULT].setText(strings.menudiff+": "+getDiffucultText(system.getDifficult()),20) ;

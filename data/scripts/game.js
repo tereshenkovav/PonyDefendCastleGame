@@ -35,6 +35,7 @@ var labdiamond ;
 var labmonsterleft ;
 var labcastle ;
 var labgameover ;
+var lablevel ;
 
 var linemonsterhealthgreen ;
 var linemonsterhealthred ;
@@ -53,7 +54,6 @@ var rdpos ;
 var flatterpos ;
 var money ;
 var money_d ;
-var monsterleft ;
 var castlehealth ;
 var ajhealth ;
 var ajpos ;
@@ -72,7 +72,6 @@ var ajcalled ;
 var rdcalled ;
 var celestiacalled ;
 var lunacalled ;
-var nextmonster ;
 var nextmoney ;
 
 var monsters = new Array() ;
@@ -92,9 +91,16 @@ var but_menu ;
 var circle ;
 var circle_gray ;
 
+var spawnlist ;
+var totaltime ;
+var teklevel ;
+
 var ispause ;
+var nextlevel ;
 
 $include<rects.inc>
+$include<consts.inc>
+$include<profile.inc>
 
 const STONE_COUNT = 5 ;
 
@@ -115,15 +121,6 @@ function createFrameArray(dirname,count) {
    for (var i=0; i<count; i++)
      frames[i]=dirname+"/"+i+".gif" ;
    return frames ;
-}
-
-function setNextMonster() {
-  var min = balance.monsterspawnmin ;
-  var max = balance.monsterspawnmax ;
-  // Это плотность волн, нужно их в конфиг баланс перенести
-  if (monsterleft<0.33*balance.initmonsters) { min/=4 ; max/=4 ; } else 
-  if (monsterleft<0.66*balance.initmonsters) { min/=2 ; max/=2 ; }  
-  nextmonster = getRandomInt(min,max) ;
 }
 
 function getNearMonsterIdx() {
@@ -152,11 +149,13 @@ function isUnderFire() {
 	return castlehealth/balance.castlehealth<0.5 ;
 }
 
-function Init() {
+function Init(args) {
 
    strings = system.loadObject("strings.json") ;
 
    balance = system.loadObject("scripts/balance.json") ;
+
+   teklevel = args.level ;
 
    makeRects(rects_gameover) ;
    makeRectsMini(rects_menu) ;
@@ -318,6 +317,9 @@ function Init() {
    labgameover = game.loadText("Arial.ttf","",22) ;
    labgameover.setColor(255,255,255) ;
    labgameover.setAlignCenter() ;
+   lablevel = game.loadText("Arial.ttf",strings.levelhead+" "+(teklevel+1),24) ;
+   lablevel.setColor(200,200,200) ;
+   lablevel.setAlignCenter() ;
 
    textcost = game.loadText("Arial.ttf","",16) ;
    textcost.setColor(255,255,255) ;
@@ -328,7 +330,6 @@ function Init() {
 
    money=balance.initmoney ;
    money_d=balance.initmoney_d ;
-   monsterleft=balance.initmonsters ;
    castlehealth=balance.castlehealth ;
   
    twilytime=-1 ;
@@ -343,9 +344,11 @@ function Init() {
 	gameover=false ;
 	iswin=false ;
 
-   setNextMonster() ;
    nextmoney = 1.0 ;
    gamespeed = 1 ;
+   totaltime = 0 ;
+
+   spawnlist = system.loadObject("levels/level_"+teklevel+".json") ;
 
    mindt=999 ;
    maxdt=0 ;
@@ -464,7 +467,7 @@ function Render() {
    labdiamond.printTo(590,110) ;
    labmoney.setText(Math.round(money)) ;   
    labmoney.printTo(640,110) ;
-   labmonsterleft.setText(monsterleft+monsters.length) ;
+   labmonsterleft.setText(spawnlist.length+monsters.length) ;
    labmonsterleft.printTo(690,110) ;
    labcastle.setText(Math.round(100*castlehealth/balance.castlehealth)+"%") ;
    if (castlehealth/balance.castlehealth<0.33) labcastle.setColor(255,0,0) ; else
@@ -513,6 +516,8 @@ function Render() {
    renderRects(rects_menu,710,20,70,30) ;
    textexit.printTo(745,25) ;
 
+   lablevel.printTo(400,120) ;
+
    cursor.renderTo(mp.x,mp.y) ;
 
    return true ;
@@ -522,15 +527,22 @@ function Frame(dt) {
    var mpos = game.getMousePos() ;
    dt*=gamespeed ;
 
+   totaltime+=dt ;
+
 	if (gameover) {
    if (game.isKeyDown(KEY_ESCAPE)) game.goToScript("menu",null) ;      
 
    if (game.isLeftButtonClicked()) {
      if (iswin) {
-       if (but_continue.isPointIn(mpos.x,mpos.y)) game.goToScript("game",null) ;
+       if (but_continue.isPointIn(mpos.x,mpos.y)) {
+         if (teklevel==LEVEL_COUNT-1)
+           game.goToScript("gamefinal",null) ;
+         else
+           game.goToScript("game",{level:nextlevel}) ;
+       }
      }
      else {
-       if (but_restart.isPointIn(mpos.x,mpos.y)) game.goToScript("game",null) ;
+       if (but_restart.isPointIn(mpos.x,mpos.y)) game.goToScript("game",{level:teklevel}) ;
      }
      if (but_menu.isPointIn(mpos.x,mpos.y)) game.goToScript("menu",null) ;
    }
@@ -557,11 +569,16 @@ function Frame(dt) {
    }
 
    // victory
-   if ((monsterleft==0)&&(monsters.length==0)) {
+   if ((spawnlist.length==0)&&(monsters.length==0)) {
 	   gameover=true ;
 	   iswin=true ;
+           var profile = loadProfile() ;
+           profile.nextlevel++ ;
+           if (profile.nextlevel==LEVEL_COUNT) profile.nextlevel=LEVEL_COUNT-1 ;
+           nextlevel=profile.nextlevel ;
+           saveProfile(profile) ;
 	   return true ;
-   }	   
+   }
 
 	// twily effects
    if (twilytime>0) {
@@ -633,16 +650,15 @@ function Frame(dt) {
    }   
 	  
    // monster spawn
-   nextmonster-=dt ;
-   if (nextmonster<=0) 
-	  if (monsterleft>0) { 
-        monsterleft-- ;
-        setNextMonster() ;
-        var midx = getRandomInt(0,2) ;
+   for (var i=0; i<spawnlist.length; i++) 
+     if (spawnlist[i].time<=totaltime) {
+        var midx = spawnlist[i].id ;
         monsters.push({ x: 800, mtype: midx, speed: monstertypes[midx].speed,
 		   attack: monstertypes[midx].attack, health: monstertypes[midx].health, 
 		   maxhealth: monstertypes[midx].health, sleep: false }) ;
-	  }
+        spawnlist.splice(i,1) ;
+        break ;
+     }
    
    // monster processing
    var ajused=false ;
