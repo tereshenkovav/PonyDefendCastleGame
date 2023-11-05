@@ -20,6 +20,7 @@ var castleico ;
 var stone ;
 var fire ;
 var strings ;
+var profile ;
 var cursor ;
 
 var snd_laser ;
@@ -162,6 +163,7 @@ function updateMonstersByDifficult() {
 }
 
 function Init(args) {
+   profile = loadProfile() ;
 
    strings = system.loadObject("strings.json") ;
 
@@ -343,7 +345,7 @@ function Init(args) {
    flatterpos=200 ;
 
    money=balance.initmoney ;
-   money_d=balance.initmoney_d ;
+   money_d=profile.money_d ;
    castlehealth=balance.castlehealth ;
   
    twilytime=-1 ;
@@ -586,9 +588,9 @@ function Frame(dt) {
    if ((spawnlist.length==0)&&(monsters.length==0)) {
 	   gameover=true ;
 	   iswin=true ;
-           var profile = loadProfile() ;
            profile.nextlevel++ ;
            if (profile.nextlevel==LEVEL_COUNT) profile.nextlevel=LEVEL_COUNT-1 ;
+           profile.money_d=money_d ;
            nextlevel=profile.nextlevel ;
            saveProfile(profile) ;
 	   return true ;
