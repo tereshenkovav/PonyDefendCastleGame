@@ -12,9 +12,10 @@ const MENU_START = 0 ;
 const MENU_DIFFICULT = 1 ;
 const MENU_LANG = 2 ;
 const MENU_SOUND = 3 ;
-const MENU_HELP = 4 ;
-const MENU_ABOUT = 5 ;
-const MENU_EXIT = 6 ;
+const MENU_STORE = 4 ;
+const MENU_HELP = 5 ;
+const MENU_ABOUT = 6 ;
+const MENU_EXIT = 7 ;
 
 $include<rects.inc>
 $include<profile.inc>
@@ -42,6 +43,7 @@ function loadLangResources() {
    menu.push(game.loadText("arial.ttf",strings.menudiff+": "+getDiffucultText(system.getDifficult()),20)) ;
    menu.push(game.loadText("arial.ttf",strings.menulang+": "+system.getCurrentLanguage().toUpperCase(),20)) ;
    menu.push(game.loadText("arial.ttf",strings.menusound+": "+(system.isSoundOn()?strings.text_on:strings.text_off),20)) ;
+   menu.push(game.loadText("arial.ttf",strings.menustore,20)) ;
    menu.push(game.loadText("arial.ttf",strings.menuhelp,20)) ;
    menu.push(game.loadText("arial.ttf",strings.menuabout,20)) ;
    menu.push(game.loadText("arial.ttf",strings.menuexit,20)) ;
@@ -77,7 +79,7 @@ function Render() {
 
    title.printTo(400,40) ;
 
-   renderRects(rects_menu,250,160,320,330) ;
+   renderRects(rects_menu,250,160,320,350) ;
 
    var selidx = getSelMenuIdx() ;
    for (var i=0; i<menu.length; i++) {
@@ -112,6 +114,7 @@ function Frame(dt) {
         system.setSoundOn(!system.isSoundOn()) ;
         menu[MENU_SOUND].setText(strings.menusound+": "+(system.isSoundOn()?strings.text_on:strings.text_off)) ;
       }
+      if (selmenu==MENU_STORE) game.goToScript("store",null) ;
       if (selmenu==MENU_HELP) game.goToScript("help",null) ;
       if (selmenu==MENU_ABOUT) game.goToScript("about",null) ;
       if (selmenu==MENU_EXIT) return false ;
