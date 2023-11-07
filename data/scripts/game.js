@@ -647,6 +647,7 @@ function Frame(dt) {
 	   raritytime-=dt ;	   
 	   if (raritytime<=0) { 
 	     money+=balance.rarityret ;
+	     if (profile.rarity_ability_0) money_d+=balance.rarityret_d ;
 	     raritytime=-1 ;
 		 snd_money.play() ;
 	   }
