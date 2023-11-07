@@ -607,6 +607,8 @@ function Frame(dt) {
    nextmoney-=dt ;
    if (nextmoney<=0.0) {
      money+=balance.moneyinc ;
+     if ((profile.pinkie_ability_0)&&(pinkietime>0))
+       money+=0.25*balance.moneyinc ;
      nextmoney=1.0 ;
    }
 
