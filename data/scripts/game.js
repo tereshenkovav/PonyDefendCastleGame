@@ -128,10 +128,11 @@ function createFrameArray(dirname,count) {
 }
 
 function getNearMonsterIdx() {
+   var dist = (profile.twily_ability_0)?800:600 ;
 	var mnear = 999 ;
 	var idx = -1;
 	 for (var i=0; i<monsters.length; i++)
-		 if (monsters[i].x<750) {			 
+		 if (monsters[i].x<dist) {
 			 if (monsters[i].x<mnear) {
 				 mnear=monsters[i].x ;
 				 idx=i ;
