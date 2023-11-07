@@ -339,26 +339,26 @@ function Init(args) {
    monstertypes.push(system.loadObject("scripts/monstertype3.json")) ;
    updateMonstersByDifficult() ;
    
-   labdiamond = game.loadText("Arial.ttf","",20) ;
+   labdiamond = game.loadText("arial.ttf","",20) ;
    labdiamond.setColor(255,255,255) ;
    labdiamond.setAlignCenter() ;
-   labmoney = game.loadText("Arial.ttf","",20) ;
+   labmoney = game.loadText("arial.ttf","",20) ;
    labmoney.setColor(255,255,255) ;
    labmoney.setAlignCenter() ;
-   labmonsterleft = game.loadText("Arial.ttf","",20) ;
+   labmonsterleft = game.loadText("arial.ttf","",20) ;
    labmonsterleft.setColor(255,255,255) ;
    labmonsterleft.setAlignCenter() ;
-   labcastle = game.loadText("Arial.ttf","",20) ;
+   labcastle = game.loadText("arial.ttf","",20) ;
    labcastle.setColor(0,255,0) ;
    labcastle.setAlignCenter() ;
-   labgameover = game.loadText("Arial.ttf","",22) ;
+   labgameover = game.loadText("arial.ttf","",22) ;
    labgameover.setColor(255,255,255) ;
    labgameover.setAlignCenter() ;
-   lablevel = game.loadText("Arial.ttf",strings.levelhead+" "+(teklevel+1),24) ;
+   lablevel = game.loadText("arial.ttf",strings.levelhead+" "+(teklevel+1),24) ;
    lablevel.setColor(200,200,200) ;
    lablevel.setAlignCenter() ;
 
-   textcost = game.loadText("Arial.ttf","",16) ;
+   textcost = game.loadText("arial.ttf","",16) ;
    textcost.setColor(255,255,255) ;
 
    game.setBackgroundColor(0,100,200) ;
