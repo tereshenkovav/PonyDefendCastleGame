@@ -60,7 +60,6 @@ var money_d ;
 var castlehealth ;
 var ajhealth ;
 var ajpos ;
-var stone_ok ;
 var balance ;
 var gamespeed ;
 var celestiapos ;
@@ -106,7 +105,8 @@ $include<rects.inc>
 $include<consts.inc>
 $include<profile.inc>
 
-const STONE_COUNT = 5 ;
+var stone_count = 5 ;
+var stone_seq = new Array();
 
 var but_calls = new Array() ;
 
@@ -283,15 +283,10 @@ function Init(args) {
    
    snd_money = game.loadSound('money.ogg') ;
    
+   if (profile.rainbow_ability_0) stone_count=10 ;
    snd_stone = new Array() ;
-   for (var i=1; i<=STONE_COUNT; i++)
+   for (var i=0; i<stone_count; i++)
 		snd_stone.push(game.loadSound('stone.ogg')) ;
-	
-   snd_stone.push(game.loadSound('stone.ogg')) ;
-   snd_stone.push(game.loadSound('stone.ogg')) ;
-   snd_stone.push(game.loadSound('stone.ogg')) ;
-   snd_stone.push(game.loadSound('stone.ogg')) ;
-   snd_stone.push(game.loadSound('stone.ogg')) ;
     
    var frames = new Array() ;
    for (var i=7; i<11; i++)
@@ -677,11 +672,12 @@ function Frame(dt) {
    // rd effects 
    if (rdcalled) {
 	   rdpos+=balance.rdspeed*dt ;
-	   for (var i=1; i<=STONE_COUNT ;i++)
-	     if ((rdpos>50+i*100)&&(stone_ok<i)) {
-			 stones.push({x: 50+i*100, y: 250, v:0 }) ;
-			 stone_ok++ ;
-			 snd_stone[i].play() ;
+	   for (var i=0; i<stone_seq.length ;i++)
+	     if (rdpos>=stone_seq[i]) {
+			 stones.push({x: stone_seq[i], y: 250, v:0 }) ;
+			 snd_stone[stone_seq.length-1].play() ;
+		 stone_seq.splice(i,1) ;
+		 break ;
 		 }
 	   if (rdpos>800) rdcalled=false ;	   	   
    }
@@ -860,7 +856,10 @@ function Frame(dt) {
    if (call_idx==4) { 
       if ((!rdcalled)&&(money>=balance.rainbowcost)) {
         rdcalled=true ;
-		stone_ok=0 ;
+        if (profile.rainbow_ability_0) 
+		stone_seq=[50,100,150,200,250,300,350,400,450,500] ;
+	else
+		stone_seq=[50,150,250,350,450] ;
 		rdpos=-rainbow.getWidth() ;		
         money-=balance.rainbowcost ;
       }
