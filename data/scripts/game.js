@@ -154,6 +154,15 @@ function updateBalanceByDifficult() {
    if (system.getDifficult()==0) balance.moneyinc=1.3*balance.moneyinc ;
 }
 
+function updateBalanceByHeroLevel() {
+   balance.ajattack*=(1+0.25*(profile.applejack_level-1)) ;
+   balance.pinkiemulattack*=(1+0.25*(profile.pinkie_level-1)) ;
+   balance.rarityret*=(1+0.25*(profile.rarity_level-1)) ;
+   balance.flatterwork*=(1+0.25*(profile.flatter_level-1)) ;
+   balance.stoneattack*=(1+0.25*(profile.rainbow_level-1)) ;
+   balance.twilyattack*=(1+0.25*(profile.twily_level-1)) ;
+}
+
 function updateMonstersByDifficult() {
    if (system.getDifficult()==2) 
       for (var i=0; i<monstertypes.length; i++) {
@@ -169,6 +178,7 @@ function Init(args) {
 
    balance = system.loadObject("scripts/balance.json") ;
    updateBalanceByDifficult() ;
+   updateBalanceByHeroLevel() ;
 
    teklevel = args.level ;
 
