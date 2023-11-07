@@ -22,6 +22,7 @@
    "ajhealth":100,
    "ajspeed":40,
    "ajattack":30,
+   "shieldrestore":10,
    "rdspeed":200,
    "stoneattack":50,
    "pinkiemulattack":1.5,

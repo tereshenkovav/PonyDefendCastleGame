@@ -19,6 +19,7 @@ var monsterico ;
 var castleico ;
 var stone ;
 var fire ;
+var shield ;
 var strings ;
 var profile ;
 var cursor ;
@@ -41,6 +42,7 @@ var lablevel ;
 var linemonsterhealthgreen ;
 var linemonsterhealthred ;
 var linemonsterhealthyellow ;
+var lineshield ;
 
 var textcost ;
 var textspeed ;
@@ -63,6 +65,7 @@ var balance ;
 var gamespeed ;
 var celestiapos ;
 var lunapos ;
+var shield_level ;
 
 var twilytime ;
 var raritytime ;
@@ -142,6 +145,11 @@ function drawInd(ind,x,proc) {
 		ind.drawTo(x-30,580+i,x-30+60*proc,580+i) ;
 }
 
+function drawIndShield(ind,x,proc) {
+	for (var i=0; i<5; i++)
+		ind.drawTo(x-30,585+i,x-30+60*proc,585+i) ;
+}
+
 function getAttackMul() {
 	if (pinkietime>0) return balance.pinkiemulattack ; else return 1 ;
 }
@@ -214,6 +222,9 @@ function Init(args) {
    fire = game.loadAnimation('fire.png',100,100,15,15) ;
    fire.play() ;
 
+   shield = game.loadAnimation('shield.png',100,100,28,14,true) ;
+   shield.play() ;
+
    coin = game.loadSprite('coin.png') ;
    coin_ico = game.loadSprite('coin.png') ;
    coin_ico.setScale(50) ;
@@ -257,6 +268,7 @@ function Init(args) {
    linemonsterhealthgreen = game.createLine(0,255,0) ;
    linemonsterhealthred = game.createLine(255,0,0) ;
    linemonsterhealthyellow = game.createLine(255,255,0) ;
+   lineshield = game.createLine(0,172,255) ;
 
    twily_wait = game.loadSprite('twily/0.gif') ;
  
@@ -455,7 +467,11 @@ function Render() {
 
 	if (ajcalled) {
       aj.renderTo(ajpos,550) ;
-	  
+	  if (shield_level>0) {
+            shield.renderTo(ajpos,550) ;
+            drawIndShield(lineshield,ajpos,(shield_level/balance.ajhealth)) ;
+          }
+
 	  var proc = ajhealth/balance.ajhealth ;	 
 	 if (proc<0.33) drawInd(linemonsterhealthred,ajpos,proc) ; else
 	 if (proc<0.66) drawInd(linemonsterhealthyellow,ajpos,proc) ; else
@@ -699,7 +715,12 @@ function Frame(dt) {
 			if (ajpos+aj.getWidth()>=monsters[i].x) {
 				mstop=true ;
 				monsters[i].health-=getAttackMul()*balance.ajattack*dt ;
-				if (!monsters[i].sleep) ajhealth-=monsters[i].attack*dt ;
+				if (!monsters[i].sleep) {
+				   if (shield_level>0) 
+                                     shield_level-=monsters[i].attack*dt ;
+				   else
+                                     ajhealth-=monsters[i].attack*dt ;
+                                }
 				ajused=true ;
 			}
 	   }
@@ -743,7 +764,11 @@ function Frame(dt) {
 
    // aj effects (after monster!)
    if (ajcalled) {
-	   if (!ajused) ajpos+=balance.ajspeed*dt ;
+	   if (!ajused) {
+             ajpos+=balance.ajspeed*dt ;
+             if ((shield_level>0)&&(shield_level<balance.ajhealth)) 
+               shield_level+=balance.shieldrestore*dt ;
+           }
 	   if ((ajpos>800)||(ajhealth<=0)) {
 		   ajcalled=false ;	   
 		   snd_galop.stop() ;
@@ -811,6 +836,7 @@ function Frame(dt) {
         ajcalled=true ;
 		ajpos=100 ;
 		ajhealth=balance.ajhealth ; 
+        if (profile.applejack_ability_0) shield_level=balance.ajhealth ; else shield_level=0;
         money-=balance.ajcost ;		
 		snd_galop.play() ;
       }
