@@ -148,9 +148,40 @@ function Render() {
 }
 
 function Frame(dt) {
+   var mpos = game.getMousePos() ;
+
    if (game.isOneOfKeysDown([KEY_ESCAPE])) game.goToScript("menu",null) ;
    if (game.isLeftButtonClicked()) {
-   } ;
+     for (var i=0; i<icons.length; i++) {
+       // Switch by hero
+       var herolevel=profile[heronames[i]+"_level"] ;
+
+       text_info.setXY(180,140-10+70*i) ;
+       if (text_info.isPointIn(mpos.x,mpos.y))
+         if ((!profile[heronames[i]+"_ability_0"])&&(profile.money_d>=balance.abilities_0[i])) {
+           profile.money_d-=balance.abilities_0[i] ;
+           profile[heronames[i]+"_ability_0"]=true ;
+           saveProfile(profile) ;
+         }
+
+       text_info.setXY(380,140-10+70*i) ;
+       if (text_info.isPointIn(mpos.x,mpos.y))
+         if ((!profile[heronames[i]+"_ability_1"])&&(profile.money_d>=balance.abilities_1[i])) {
+           profile.money_d-=balance.abilities_1[i] ;
+           profile[heronames[i]+"_ability_1"]=true ;
+           saveProfile(profile) ;
+         }
+
+       text_info.setXY(580,140-10+70*i) ;
+       if (text_info.isPointIn(mpos.x,mpos.y))
+         if (profile.money_d>=getPrice(balance.levelup_cost_initial,herolevel)) {
+           profile.money_d-=getPrice(balance.levelup_cost_initial,herolevel) ;
+           profile[heronames[i]+"_level"]=herolevel+1 ;
+           saveProfile(profile) ;
+         }
+
+     }
+   }
 
    return true ;
 }
