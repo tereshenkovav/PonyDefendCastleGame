@@ -4,6 +4,7 @@ var text_title ;
 var text_info ;
 var rects_help = new Array();
 var butok ;
+var but_menu ;
 var diamond ;
 var diamond_ico ;
 var text_diamond ;
@@ -41,12 +42,13 @@ function Init() {
    cursor.setHotSpot(0,0) ;
 
    butok = game.loadSprite("ok.png") ;
+   but_menu = game.loadText("arial.ttf",strings.menuexit,18) ;
 
    text_title = game.loadText("arial.ttf",strings.menustore,24) ;
    text_title.setColor(200,200,200) ;
    text_title.setAlignCenter() ;
 
-   text_info = game.loadText("arial.ttf",strings.menustore,16) ;
+   text_info = game.loadText("arial.ttf","",16) ;
    text_info.setColor(200,200,200) ;
 
    text_diamond = game.loadText("arial.ttf","",22) ;
@@ -81,6 +83,9 @@ function Render() {
    back.renderTo(0,182) ;
 
    renderRects(rects_help,50,50,700,500) ;
+
+   if (but_menu.isPointIn(mpos.x,mpos.y)) but_menu.setColor(255,255,255) ; else but_menu.setColor(200,200,200) ;
+   but_menu.printTo(80,70) ;
 
    text_title.printTo(400,70) ;
 
@@ -152,6 +157,8 @@ function Frame(dt) {
 
    if (game.isOneOfKeysDown([KEY_ESCAPE])) game.goToScript("menu",null) ;
    if (game.isLeftButtonClicked()) {
+     if (but_menu.isPointIn(mpos.x,mpos.y)) game.goToScript("menu",null) ;
+
      for (var i=0; i<icons.length; i++) {
        // Switch by hero
        var herolevel=profile[heronames[i]+"_level"] ;
