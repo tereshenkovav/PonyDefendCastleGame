@@ -151,7 +151,10 @@ function drawIndShield(ind,x,proc) {
 }
 
 function getAttackMul() {
-	if (pinkietime>0) return balance.pinkiemulattack ; else return 1 ;
+        var r = 1 ;
+	if (pinkietime>0) r=balance.pinkiemulattack ; 
+	if ((flattertime>0)&&(profile.flatter_ability_0)) r*=1.5 ; 
+	return r ;
 }
 
 function isUnderFire() {
@@ -457,8 +460,16 @@ function Render() {
             monster_sleep[monsters[i].mtype].renderTo(monsters[i].x,575) ;
             stun.renderTo(monsters[i].x,575-monster_sleep[monsters[i].mtype].getHeight()) ;
          }
-         else
-            monster[monsters[i].mtype].renderTo(monsters[i].x,575) ;
+         else {
+            if ((flattertime>0)&&(profile.flatter_ability_0)) {
+              monster[monsters[i].mtype].setScale(70) ;
+              monster[monsters[i].mtype].renderTo(monsters[i].x,585) ;
+            }
+            else {
+              monster[monsters[i].mtype].setScale(100) ;
+              monster[monsters[i].mtype].renderTo(monsters[i].x,575) ;
+            }
+         }
 	 var proc = monsters[i].health/monsters[i].maxhealth ;	 
 	 if (proc<0.33) drawInd(linemonsterhealthred,monsters[i].x,proc) ; else
 	 if (proc<0.66) drawInd(linemonsterhealthyellow,monsters[i].x,proc) ; else
@@ -735,7 +746,7 @@ function Frame(dt) {
 
 	   if (!monsters[i].sleep) {
 	   if (flattertime>0) {			
-	     monsters[i].x+=0.5*monsters[i].speed*dt ;
+	     monsters[i].x+=0.2*monsters[i].speed*dt ;
 	   }
 	   else {
 	     if (!mstop) monsters[i].x-=monsters[i].speed*dt ;
