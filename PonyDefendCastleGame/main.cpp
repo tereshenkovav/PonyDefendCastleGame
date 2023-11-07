@@ -41,6 +41,9 @@ int main(int argc, char *argv[])
     sf::RenderWindow window(sf::VideoMode(800, 600),"MainWindow") ;
     window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(60);
+    sf::Image ico ;
+    if (ico.loadFromFile("sprites/icon.png"))
+        window.setIcon(ico.getSize().x, ico.getSize().y, ico.getPixelsPtr());
 
     ExtProc extproc(&window) ;
 

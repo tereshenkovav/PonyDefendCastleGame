@@ -68,3 +68,8 @@ unix {
   CONFIG(debug, debug|release): LIBS += -lsfml-audio-d -lsfml-graphics-d -lsfml-network-d -lsfml-window-d -lsfml-system-d
 }
 
+
+win32 {
+        RC_FILE += main.rc
+        OTHER_FILES += main.rc
+}
