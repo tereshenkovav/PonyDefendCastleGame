@@ -385,7 +385,11 @@ function Init(args) {
    gamespeed = 1 ;
    totaltime = 0 ;
 
-   spawnlist = system.loadObject("levels/level_"+teklevel+".json") ;
+   var list = system.loadObject("levels/level_"+teklevel+".json") ;
+   spawnlist = new Array() ;
+   for (var i=0; i<list.length; i++) 
+     for (var j=0; j<list[i].time.length; j++) 
+       spawnlist.push({id: list[i].id, time: list[i].time[j] }) ;
 
    mindt=999 ;
    maxdt=0 ;
