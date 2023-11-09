@@ -114,6 +114,19 @@ function getRandomInt(min, max){
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function offAllPonyAndMonster() {
+  twilytime=-1 ;
+  raritytime=-1 ;
+  flattertime=-1 ;
+  pinkietime=-1 ;
+
+  ajcalled=false ;
+  rdcalled=false ;
+  celestiacalled=false ;
+  lunacalled=false ;
+  monsters=[] ;
+}
+
 function createButton(filename) {
    var but = game.loadSprite(filename) ;
    but.setScale(60) ;   
@@ -638,6 +651,7 @@ function Frame(dt) {
    if ((spawnlist.length==0)&&(monsters.length==0)) {
 	   gameover=true ;
 	   game.soundsPauseOrResume() ;
+	   offAllPonyAndMonster() ;
 	   iswin=true ;
            profile.nextlevel=teklevel+1 ;
            if (profile.nextlevel==LEVEL_COUNT) profile.nextlevel=LEVEL_COUNT-1 ;
@@ -785,6 +799,7 @@ function Frame(dt) {
 	if (castlehealth<=0) {
 	   gameover=true ;
        	   game.soundsPauseOrResume() ;
+       	   offAllPonyAndMonster() ;
 	   iswin=false ;
 	   return true ;
 	}  
