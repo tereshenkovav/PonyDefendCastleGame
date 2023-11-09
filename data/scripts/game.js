@@ -323,10 +323,12 @@ function Init(args) {
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m1",25),10)) ;
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m2",8),8)) ;
    monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m3",8),8)) ;
+   monster.push(game.loadAnimationFromFiles(createFrameArray("monsters/m4",5),5)) ;
 
    monster_sleep.push(game.loadSprite("monsters/m1/6.gif")) ;
    monster_sleep.push(game.loadSprite("monsters/m2/7.gif")) ;
    monster_sleep.push(game.loadSprite("monsters/m3/0.gif")) ;
+   monster_sleep.push(game.loadSprite("monsters/m4/0.gif")) ;
    
    for (var i=0; i<monster.length; i++) {
      monster[i].setHotSpot(monster[i].getWidth()/2,monster[i].getHeight()) ;
@@ -337,6 +339,8 @@ function Init(args) {
    monstertypes.push(system.loadObject("scripts/monstertype1.json")) ;
    monstertypes.push(system.loadObject("scripts/monstertype2.json")) ;
    monstertypes.push(system.loadObject("scripts/monstertype3.json")) ;
+   monstertypes.push(system.loadObject("scripts/monstertype4.json")) ;
+
    updateMonstersByDifficult() ;
    
    labdiamond = game.loadText("arial.ttf","",20) ;
