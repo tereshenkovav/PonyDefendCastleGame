@@ -627,7 +627,7 @@ function Frame(dt) {
    if ((spawnlist.length==0)&&(monsters.length==0)) {
 	   gameover=true ;
 	   iswin=true ;
-           profile.nextlevel++ ;
+           profile.nextlevel=teklevel+1 ;
            if (profile.nextlevel==LEVEL_COUNT) profile.nextlevel=LEVEL_COUNT-1 ;
            profile.money_d=money_d ;
            nextlevel=profile.nextlevel ;
@@ -732,7 +732,7 @@ function Frame(dt) {
 				monsters[i].health-=getAttackMul()*balance.ajattack*dt ;
 				if (!monsters[i].sleep) {
 				   if (shield_level>0) 
-                                     shield_level-=monsters[i].attack*dt ;
+                                     shield_level-=2*monsters[i].attack*dt ;
 				   else
                                      ajhealth-=monsters[i].attack*dt ;
                                 }

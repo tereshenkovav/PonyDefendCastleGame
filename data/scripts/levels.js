@@ -39,7 +39,7 @@ function Init() {
 function getSelMenuIdx() {
    var mpos = game.getMousePos() ;
    for (var i=0; i<menu.length; i++) 
-     if ((mpos.x>340)&&(mpos.y>200+i*36)&&(mpos.y<200+i*36+32)) 
+     if ((mpos.x>340)&&(mpos.y>150+i*36)&&(mpos.y<150+i*36+32)) 
        return i ;
    return -1 ;  
 }
@@ -49,14 +49,14 @@ function Render() {
 
    title.printTo(400,40) ;
 
-   renderRects(rects_menu,250,160,320,330) ;
+   renderRects(rects_menu,250,130,320,390) ;
 
    var selidx = getSelMenuIdx() ;
    for (var i=0; i<menu.length; i++) {
      if (i>profile.nextlevel) menu[i].setColor(100,100,100) ; else {
        if (i==selidx) menu[i].setColor(255,255,255) ; else menu[i].setColor(180,180,180) ;
      }
-     menu[i].printTo(340,200+i*36) ;
+     menu[i].printTo(340,150+i*36) ;
    }
 
    var mpos = game.getMousePos() ;
