@@ -610,11 +610,18 @@ function Frame(dt) {
 	if (maxdt<dt) maxdt=dt ;
 
 	if (ispause) {
-   if (game.isKeyDown(KEY_ESCAPE)) ispause=false ;      
+   if (game.isKeyDown(KEY_ESCAPE)) { 
+     ispause=false ;
+     game.soundsPauseOrResume() ;
+   }
 
    if (game.isLeftButtonClicked()) {
      if (but_yes.isPointIn(mpos.x,mpos.y)) game.goToScript("menu",null) ;      
-     if (but_no.isPointIn(mpos.x,mpos.y)) ispause=false ;
+     if (but_no.isPointIn(mpos.x,mpos.y)) { 
+     ispause=false ;
+     game.soundsPauseOrResume() ;
+   }
+
    }
  	   return true ;
 	}
@@ -630,6 +637,7 @@ function Frame(dt) {
    // victory
    if ((spawnlist.length==0)&&(monsters.length==0)) {
 	   gameover=true ;
+	   game.soundsPauseOrResume() ;
 	   iswin=true ;
            profile.nextlevel=teklevel+1 ;
            if (profile.nextlevel==LEVEL_COUNT) profile.nextlevel=LEVEL_COUNT-1 ;
@@ -776,6 +784,7 @@ function Frame(dt) {
 	// fail
 	if (castlehealth<=0) {
 	   gameover=true ;
+       	   game.soundsPauseOrResume() ;
 	   iswin=false ;
 	   return true ;
 	}  
@@ -806,7 +815,11 @@ function Frame(dt) {
    
    if (game.isLeftButtonClicked()) {
 
-     if (textexit.isPointIn(mpos.x,mpos.y)) ispause=true ;
+     if (textexit.isPointIn(mpos.x,mpos.y)) { 
+       ispause=true ;
+       game.soundsPauseOrResume() ;
+     }
+
      if (textspeed.isPointIn(mpos.x,mpos.y)) {
        if (gamespeed==1) gamespeed=2 ; else
        if (gamespeed==2) gamespeed=4 ; else gamespeed=1 ;
@@ -894,6 +907,7 @@ function Frame(dt) {
       
    if (game.isKeyDown(KEY_ESCAPE)) { 
      ispause=true ;
+     game.soundsPauseOrResume() ;
    }
    return true ;
 }
