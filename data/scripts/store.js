@@ -4,6 +4,7 @@ var text_title ;
 var text_info ;
 var rects_help = new Array();
 var butok ;
+var butno ;
 var but_menu ;
 var diamond ;
 var diamond_ico ;
@@ -42,6 +43,7 @@ function Init() {
    cursor.setHotSpot(0,0) ;
 
    butok = game.loadSprite("ok.png") ;
+   butno = game.loadSprite("cancel.png") ;
    but_menu = game.loadText("arial.ttf",strings.menuexit,18) ;
 
    text_title = game.loadText("arial.ttf",strings.menustore,24) ;
@@ -116,15 +118,15 @@ function Render() {
      text_info.print() ;
 
      // Second ability
-     if (ability_1) 
-       butok.renderTo(360,140+70*i) ;
+     if (!ability_1) 
+       butno.renderTo(360,140+70*i) ;
      else {
        diamond_ico.renderTo(360,140-10+70*i) ;
        text_price.setText(balance.abilities_1[i]) ;
        text_price.printTo(360,140+70*i) ;
      }
      text_info.setXY(380,140-10+70*i) ;
-     if (ability_1) 
+     if (!ability_1) 
        text_info.setColor(200,200,200) ;
      else {
        if (text_info.isPointIn(mpos.x,mpos.y)) text_info.setColor(255,255,255) ; else text_info.setColor(150,150,150) ;
@@ -178,7 +180,7 @@ function Frame(dt) {
            profile[heronames[i]+"_ability_1"]=true ;
            saveProfile(profile) ;
          }
-
+       /*
        text_info.setXY(580,140-10+70*i) ;
        if (text_info.isPointIn(mpos.x,mpos.y))
          if (profile.money_d>=getPrice(balance.levelup_cost_initial,herolevel)) {
@@ -186,7 +188,7 @@ function Frame(dt) {
            profile[heronames[i]+"_level"]=herolevel+1 ;
            saveProfile(profile) ;
          }
-
+       */
      }
    }
 
