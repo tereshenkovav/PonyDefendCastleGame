@@ -172,7 +172,7 @@ function Frame(dt) {
            profile[heronames[i]+"_ability_0"]=true ;
            saveProfile(profile) ;
          }
-
+       /*
        text_info.setXY(380,140-10+70*i) ;
        if (text_info.isPointIn(mpos.x,mpos.y))
          if ((!profile[heronames[i]+"_ability_1"])&&(profile.money_d>=balance.abilities_1[i])) {
@@ -180,7 +180,8 @@ function Frame(dt) {
            profile[heronames[i]+"_ability_1"]=true ;
            saveProfile(profile) ;
          }
-       /*
+       */
+
        text_info.setXY(580,140-10+70*i) ;
        if (text_info.isPointIn(mpos.x,mpos.y))
          if (profile.money_d>=getPrice(balance.levelup_cost_initial,herolevel)) {
@@ -188,7 +189,6 @@ function Frame(dt) {
            profile[heronames[i]+"_level"]=herolevel+1 ;
            saveProfile(profile) ;
          }
-       */
      }
    }
 
