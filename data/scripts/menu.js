@@ -52,7 +52,7 @@ function loadLangResources() {
 function getSelMenuIdx() {
    var mpos = game.getMousePos() ;
    for (var i=0; i<menu.length; i++) 
-     if ((mpos.x>340)&&(mpos.y>200+i*36)&&(mpos.y<200+i*36+32)) 
+     if ((mpos.x>340)&&(mpos.x<560)&&(mpos.y>200+i*36)&&(mpos.y<200+i*36+32)) 
        return i ;
    return -1 ;  
 }

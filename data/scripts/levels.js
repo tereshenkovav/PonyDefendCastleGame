@@ -39,7 +39,7 @@ function Init() {
 function getSelMenuIdx() {
    var mpos = game.getMousePos() ;
    for (var i=0; i<menu.length; i++) 
-     if ((mpos.x>340)&&(mpos.y>150+i*36)&&(mpos.y<150+i*36+32)) 
+     if ((mpos.x>340)&&(mpos.x<450)&&(mpos.y>150+i*36)&&(mpos.y<150+i*36+32)) 
        return i ;
    return -1 ;  
 }
