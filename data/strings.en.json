@@ -5,7 +5,7 @@
   "textpause":"Pause",
   "menustart":"Start",
   "menudiff":"Difficulty",
-  "menustore":"Improvements",
+  "menustore":"Upgrades",
   "menuhelp":"Help",
   "menuabout":"About",
   "menusound":"Sound",
@@ -32,7 +32,7 @@
   "about_info":"  Castle Defense style game with MLP:FiM characters. Developed\nwith C++/QtScript/SFML. Author - Aleksandr V. Tereshenkov.\nHome pages: tav-developer.itch.io and github.com/tereshenkovav",
   "about_credits":"Credits",
   "help_title":"Game rules",
-  "help_text":"The task of the game - at each level, do not let the enemies destroy your\ncastle, summoning for gold and diamonds ponies that attack enemies\nor provide other support.\nThe gold increased automatically every second, diamonds increased\nfor destroying enemies and stored between levels.\nAlso for diamonds, you can order an increase in the level of each pony or\nadditional improvements for ponies between levels.\n\nCharacteristics of ponies:\n\nApplejack delays and attacks monsters with a melee attack.\nPinki Pie increases the value of all attacks during his summoning.\nRainbow Dash flies over the battlefield and drops stones that cause\nonce damage.\nFlattershy, at the time of his summoning, he forces all enemies\non the battlefield to retreat at a low speed.\nRariti increasing the gold reserve at the end of his call.\nTwilight Sparkle attacks the nearest monster with a laser.",
+  "help_text":"The goal of the game - not to let enemies destroy your castle at each level,\nby summoning ponies for gold and diamonds, that fight the enemies\nor provide other support.\nThe amount of gold increases automatically every second, the amount\nof diamonds increases for destroying enemies and is saved between levels.\nAlso, between levels, you can purchase level increase and additional\nupgrades for ponies.\n\nCharacteristics of ponies:\n\nApplejack fights monsters in melee holding them back.\nPinkie Pie with her presence increases the power of all attacks.\nRainbow Dash flies over the battlefield dropping stones that deal damage.\nFlattershy with her presence makes all enemies on the battlefield\nto retreat at low speed.\nRarity replenishes the gold stock by the end of her activity.\nTwilight Sparkle attacks the nearest monster with a laser.",
   "abilities_0":[
      "Force shield",
      "Gold bonus",
