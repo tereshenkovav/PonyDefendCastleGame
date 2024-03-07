@@ -12,10 +12,11 @@ const MENU_START = 0 ;
 const MENU_DIFFICULT = 1 ;
 const MENU_LANG = 2 ;
 const MENU_SOUND = 3 ;
-const MENU_STORE = 4 ;
-const MENU_HELP = 5 ;
-const MENU_ABOUT = 6 ;
-const MENU_EXIT = 7 ;
+const MENU_FULLSCREEN = 4 ;
+const MENU_STORE = 5 ;
+const MENU_HELP = 6 ;
+const MENU_ABOUT = 7 ;
+const MENU_EXIT = 8 ;
 
 $include<rects.inc>
 $include<profile.inc>
@@ -43,6 +44,7 @@ function loadLangResources() {
    menu.push(game.loadText("arial.ttf",strings.menudiff+": "+getDiffucultText(system.getDifficult()),20)) ;
    menu.push(game.loadText("arial.ttf",strings.menulang+": "+system.getCurrentLanguage().toUpperCase(),20)) ;
    menu.push(game.loadText("arial.ttf",strings.menusound+": "+(system.isSoundOn()?strings.text_on:strings.text_off),20)) ;
+   menu.push(game.loadText("arial.ttf",strings.menufullscreen+": "+(system.isFullScreen()?strings.text_on:strings.text_off),20)) ;
    menu.push(game.loadText("arial.ttf",strings.menustore,20)) ;
    menu.push(game.loadText("arial.ttf",strings.menuhelp,20)) ;
    menu.push(game.loadText("arial.ttf",strings.menuabout,20)) ;
@@ -52,7 +54,7 @@ function loadLangResources() {
 function getSelMenuIdx() {
    var mpos = game.getMousePos() ;
    for (var i=0; i<menu.length; i++) 
-     if ((mpos.x>340)&&(mpos.x<560)&&(mpos.y>200+i*36)&&(mpos.y<200+i*36+32)) 
+     if ((mpos.x>340)&&(mpos.x<560)&&(mpos.y>180+i*36)&&(mpos.y<180+i*36+32)) 
        return i ;
    return -1 ;  
 }
@@ -70,7 +72,8 @@ function Init() {
    game.setBackgroundColor(0,100,200) ;
 
    makeRects(rects_menu) ;
-
+   // Дублируем, чтобы отработал после смены типа окна
+   system.showCursor(false) ;
    return true ;
 }
 
@@ -84,9 +87,9 @@ function Render() {
    var selidx = getSelMenuIdx() ;
    for (var i=0; i<menu.length; i++) {
      if (i==selidx) menu[i].setColor(255,255,255) ; else menu[i].setColor(180,180,180) ;
-     menu[i].printTo(340,200+i*36) ;
+     menu[i].printTo(340,180+i*36) ;
    }
-   langico.renderTo(340+menu[MENU_LANG].getTextWidth()+30,200+MENU_LANG*36+12) ;
+   langico.renderTo(340+menu[MENU_LANG].getTextWidth()+30,180+MENU_LANG*36+12) ;
 
    var mpos = game.getMousePos() ;
    cursor.renderTo(mpos.x,mpos.y) ;
@@ -113,6 +116,9 @@ function Frame(dt) {
       if (selmenu==MENU_SOUND) { 
         system.setSoundOn(!system.isSoundOn()) ;
         menu[MENU_SOUND].setText(strings.menusound+": "+(system.isSoundOn()?strings.text_on:strings.text_off)) ;
+      }
+      if (selmenu==MENU_FULLSCREEN) { 
+        system.switchFullScreen() ;
       }
       if (selmenu==MENU_STORE) game.goToScript("store",null) ;
       if (selmenu==MENU_HELP) game.goToScript("help",null) ;
