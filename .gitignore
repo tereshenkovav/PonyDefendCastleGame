@@ -5,6 +5,7 @@
 bin/PonyDefendCastleGame
 data/deflang.json
 data/credits.json
+data/version.json
 setup/windows/*.zip
 setup/windows/*.exe
 setup/linux/*.AppImage

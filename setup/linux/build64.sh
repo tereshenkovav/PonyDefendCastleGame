@@ -1,5 +1,22 @@
 #!/bin/bash
 
+for i in `git tag --list --sort=committerdate`; do BUILDTAG=$i; done
+
+for i in `git rev-parse HEAD`; do BUILDCOMMIT=$i; done
+BUILDCOMMIT=${BUILDCOMMIT:0:8}
+
+for i in `git rev-parse --abbrev-ref HEAD`; do BUILDBRANCH=$i; done
+
+echo $BUILDTAG $BUILDCOMMIT $BUILDBRANCH
+
+VERSION=${BUILDTAG:1}
+
+echo {  > ../../data/version.json
+echo \"tag\":\"$BUILDTAG\", >> ../../data/version.json
+echo \"commit\":\"$BUILDCOMMIT\", >> ../../data/version.json
+echo \"branch\":\"$BUILDBRANCH\" >> ../../data/version.json
+echo }  >> ../../data/version.json
+
 appdir=/tmp/PonyDefendCastleGame.AppDir
 
 rm -rf $appdir
