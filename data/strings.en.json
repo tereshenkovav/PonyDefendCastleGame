@@ -34,6 +34,14 @@
   "about_credits":"Credits",
   "help_title":"Game rules",
   "help_text":"The goal of the game - not to let enemies destroy your castle at each level,\nby summoning ponies for gold and diamonds, that fight the enemies\nor provide other support.\nThe amount of gold increases automatically every second, the amount\nof diamonds increases for destroying enemies and is saved between levels.\nAlso, between levels, you can purchase level increase and additional\nupgrades for ponies.\n\nCharacteristics of ponies:\n\nApplejack fights monsters in melee holding them back.\nPinkie Pie with her presence increases the power of all attacks.\nRainbow Dash flies over the battlefield dropping stones that deal damage.\nFlattershy with her presence makes all enemies on the battlefield\nto retreat at low speed.\nRarity replenishes the gold stock by the end of her activity.\nTwilight Sparkle attacks the nearest monster with a laser.",
+  "levellearning":" [Tutorial]",
+  "textlearn":[
+     "Here you can see the gold,\ndiamonds, the remaining\nmonsters on the level\nand HP of the castle",
+     "These are the pony summon\nbuttons, and the required\ngold or diamonds is showed\nbelow them",
+     "Wait until there is enough\ngold to summon Applejack",
+     "Excellent, now press\nthe Applejack summon button\nso that run to attack\nthe enemies",
+     "All enemies are destroyed!\nIn the next levels, summon\nother ponies, their abilities\nare described in the Help\nof the main menu",
+   ],
   "abilities_0":[
      "Force shield",
      "Gold bonus",

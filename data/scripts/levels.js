@@ -31,7 +31,8 @@ function Init() {
    profile = loadProfile() ;
 
    for (var i=0; i<LEVEL_COUNT; i++)
-     menu.push(game.loadText("arial.ttf",strings.levelhead+" "+(i+1),20)) ;
+     menu.push(game.loadText("arial.ttf",strings.levelhead+" "+
+       (i+1)+((i==0)?strings.levellearning:""),20)) ;
 
    return true ;
 }

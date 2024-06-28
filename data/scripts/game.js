@@ -23,6 +23,7 @@ var shield ;
 var strings ;
 var profile ;
 var cursor ;
+var arrow ;
 
 var snd_laser ;
 var snd_galop ;
@@ -47,6 +48,9 @@ var lineshield ;
 var textcost ;
 var textspeed ;
 var textmenu ;
+var textlearn ;
+var showlearn = false ;
+var teklearnn = 0 ;
 
 var monster = new Array() ;
 var monster_sleep = new Array() ;
@@ -112,6 +116,10 @@ var but_calls = new Array() ;
 
 function getRandomInt(min, max){
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function isLevelLearn() {
+  return teklevel==0 ;
 }
 
 function offAllPonyAndMonster() {
@@ -233,6 +241,7 @@ function Init(args) {
    back.setHotSpot(0,0) ;
    cursor = game.loadSprite("cursor.png") ;
    cursor.setHotSpot(0,0) ;
+   arrow = game.loadSprite("arrow.png") ;
    castle = game.loadSprite('castle.png') ;
    castle.setHotSpot(0,0) ;
    stone = game.loadSprite('stone.png') ;
@@ -371,12 +380,17 @@ function Init(args) {
    labgameover = game.loadText("arial.ttf","",22) ;
    labgameover.setColor(255,255,255) ;
    labgameover.setAlignCenter() ;
-   lablevel = game.loadText("arial.ttf",strings.levelhead+" "+(teklevel+1),24) ;
+   lablevel = game.loadText("arial.ttf",strings.levelhead+" "+(teklevel+1)+
+    (isLevelLearn()?strings.levellearning:""),24) ;
    lablevel.setColor(200,200,200) ;
    lablevel.setAlignCenter() ;
 
    textcost = game.loadText("arial.ttf","",16) ;
    textcost.setColor(255,255,255) ;
+
+   textlearn = game.loadText("arial.ttf","",20) ;
+   textlearn.setColor(255,255,255) ;
+   textlearn.setAlignCenter() ;
 
    game.setBackgroundColor(0,100,200) ;
      
@@ -413,12 +427,14 @@ function Init(args) {
 
    ispause = false ;
 
+   showlearn = isLevelLearn() ;
+
    return true ;
 }
  
 function Render() {
 	var mp = game.getMousePos() ;   
-	
+
    back.renderTo(0,182) ;
    diamond.renderTo(590,80) ;
    coin.renderTo(640,80) ;
@@ -588,12 +604,44 @@ function Render() {
 
    lablevel.printTo(400,120) ;
 
+   if (showlearn) {
+     renderRects(rects_gameover,250,220,300,160) ;
+     textlearn.setText(strings.textlearn[teklearnn]) ;
+     textlearn.printTo(400,230) ;
+     if (teklearnn==0) {
+       arrow.setAngle(-60) ;
+       arrow.renderTo(610,210) ;
+     }
+     if (teklearnn==1) {
+       arrow.setAngle(-120) ;
+       arrow.renderTo(190,170) ;
+     }
+     if (teklearnn==3) {
+       arrow.setAngle(-120) ;
+       arrow.renderTo(100,160) ;
+     }
+   }
+
    cursor.renderTo(mp.x,mp.y) ;
 
    return true ;
 }
 
 function Frame(dt) {
+   if (isLevelLearn()) {
+     if ((teklearnn==3)&&(money>=balance.ajcost)) showlearn=true ;
+     if ((teklearnn==4)&&(spawnlist.length+monsters.length==0)) showlearn=true ;
+   }
+
+   if (showlearn && (teklearnn!=3)) {
+     if (game.isLeftButtonClicked()||
+         game.isOneOfKeysDown([KEY_ESCAPE,KEY_SPACE,KEY_ENTER])) {
+       teklearnn++ ;
+       showlearn=(teklearnn<=2) ;
+     }
+     return true ;
+   }
+
    var mpos = game.getMousePos() ;
    dt*=gamespeed ;
 
@@ -886,6 +934,10 @@ function Frame(dt) {
         if (profile.applejack_ability_0) shield_level=balance.ajhealth ; else shield_level=0;
         money-=balance.ajcost ;		
 		snd_galop.play() ;
+	if (showlearn) {
+          showlearn=false ;
+          teklearnn++ ;
+        }
       }
    }
    
