@@ -29,7 +29,7 @@
   "text_medi":"Средняя",
   "text_easy":"Низкая",
   "about_title":"Игра: Защита пони-замка",
-  "about_version":"v1.0.0",
+  "about_version":"{0}, коммит {1}, ветка {2}",
   "about_info":"   Игра-защита замка с персонажами MLP:FiM. Разработано на\nC++/QtScript/SFML. Автор игры - Терешенков Александр.\nСайт автора - boosty.to/ponygames и github.com/tereshenkovav",
   "about_credits":"Благодарности",
   "help_title":"Правила игры",

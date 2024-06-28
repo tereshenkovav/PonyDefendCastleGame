@@ -29,7 +29,7 @@
   "text_medi":"Medium",
   "text_easy":"Low",
   "about_title":"Pony-castle defense game",
-  "about_version":"v1.0.0",
+  "about_version":"{0}, commit {1}, branch {2}",
   "about_info":"  Castle Defense style game with MLP:FiM characters. Developed\nwith C++/QtScript/SFML. Author - Aleksandr V. Tereshenkov.\nHome pages: tav-developer.itch.io and github.com/tereshenkovav",
   "about_credits":"Credits",
   "help_title":"Game rules",

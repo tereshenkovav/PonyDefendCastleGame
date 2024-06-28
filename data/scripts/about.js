@@ -5,6 +5,7 @@ var text_title ;
 var text_ver ;
 var rects_help = new Array();
 var credits_str ;
+var ver_str ;
 var cursor ;
 
 $include<rects.inc>
@@ -40,6 +41,14 @@ function Init() {
      for (var i=0; i<credits.length; i++)
        credits_str+=(credits[i]+"\n") ;
 
+   ver_str = "" ;
+   var version = system.loadObject("version.json") ;
+   if (version!=null) {
+      ver_str=strings.about_version.replace("{0}",version.tag) ;
+      ver_str=ver_str.replace("{1}",version.commit) ;
+      ver_str=ver_str.replace("{2}",version.branch) ;
+   }
+
    return true ;
 }
 
@@ -50,7 +59,7 @@ function Render() {
 
    text_title.setText(strings.about_title) ;
    text_title.printTo(400,100) ;
-   text_ver.setText(strings.about_version) ;
+   text_ver.setText(ver_str) ;
    text_ver.printTo(400,130) ;
    text_about.setText(strings.about_info) ;
    text_about.printTo(100,180) ;
