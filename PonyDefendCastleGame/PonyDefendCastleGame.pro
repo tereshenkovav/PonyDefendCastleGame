@@ -31,6 +31,7 @@ SOURCES += \
     $$COREDIR/sound.cpp \
     $$COREDIR/sprite.cpp \
     $$COREDIR/text.cpp \
+    $$COREDIR/pixeltext.cpp \
     extproc.cpp \
     main.cpp
 
@@ -44,6 +45,7 @@ HEADERS += \
     $$COREDIR/sound.h \
     $$COREDIR/sprite.h \
     $$COREDIR/text.h \
+    $$COREDIR/pixeltext.h \
     extproc.h
 
 # Default rules for deployment.
@@ -66,6 +68,13 @@ win32 {
 unix {
   CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system
   CONFIG(debug, debug|release): LIBS += -lsfml-audio-d -lsfml-graphics-d -lsfml-network-d -lsfml-window-d -lsfml-system-d
+}
+
+macx {
+  LIBS+=-L"/usr/local/lib"
+  INCLUDEPATH+=/usr/local/include
+  DEPENDPATH+=/usr/local/include
+  QMAKE_RPATHDIR=@executable_path/../Frameworks
 }
 
 

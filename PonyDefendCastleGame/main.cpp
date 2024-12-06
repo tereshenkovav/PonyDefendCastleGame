@@ -28,15 +28,15 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    #if (defined (Q_OS_LINUX))
-        // Поправка для корректного старта в AppImage
-        if (QDir::current().path().endsWith("/usr"))
-            QDir::setCurrent("data") ;
-        else
-            QDir::setCurrent("../data") ;
-    #else
-        QDir::setCurrent("../data") ;
-    #endif
+    QDir::setCurrent("../data") ;
+#if (defined (Q_OS_LINUX))
+    // Поправка для корректного старта в AppImage
+    if (QDir::current().path().endsWith("/usr")) QDir::setCurrent("data") ;
+#endif
+#if (defined (Q_OS_MACOS))
+    // Поправка для корректного старта в .app
+    QDir::setCurrent(QCoreApplication::applicationDirPath()+"/data") ;
+#endif
 
     QString script="main" ;
     QString args="argv" ;
